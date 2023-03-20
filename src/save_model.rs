@@ -6,8 +6,8 @@ pub const SAVE_HEADER_START_INDEX: usize = 0x1901D0E;
 pub const SAVE_HEADER_LENGTH: usize = 0x24C;
 pub const CHAR_ACTIVE_STATUS_START_INDEX: usize = 0x1901D04;
 pub const CHAR_NAME_LENGTH: usize = 0x22;
-pub const CHAR_LEVEL_LOCATION: usize = 0x22;
-pub const CHAR_PLAYED_START_INDEX: usize = 0x26;
+// pub const CHAR_LEVEL_LOCATION: usize = 0x22;
+// pub const CHAR_PLAYED_START_INDEX: usize = 0x26;
 pub const STEAM_ID_LOCATION: usize = 0x19003B4;
 
 pub struct SteamID {
@@ -49,14 +49,14 @@ fn parse_character_name(slot_index: usize, game_data: &[u8]) -> String {
     String::from_utf8_lossy(&bytes).to_string()
 }
 
-fn parse_save_data(slot_index: usize, game_data: &[u8]) -> Vec<u8> {
-    game_data
-        .iter()
-        .skip(SLOT_START_INDEX + slot_index * 0x10 + slot_index * SLOT_LENGTH)
-        .take(SLOT_LENGTH)
-        .copied()
-        .collect::<Vec<u8>>()
-}
+// fn parse_save_data(slot_index: usize, game_data: &[u8]) -> Vec<u8> {
+//     game_data
+//         .iter()
+//         .skip(SLOT_START_INDEX + slot_index * 0x10 + slot_index * SLOT_LENGTH)
+//         .take(SLOT_LENGTH)
+//         .copied()
+//         .collect::<Vec<u8>>()
+// }
 
 fn parse_header_data(slot_index: usize, game_data: &[u8]) -> Vec<u8> {
     game_data
@@ -81,7 +81,6 @@ pub struct Save {
     pub character_name: String,
     pub save_data: Vec<u8>,
     pub header_data: Vec<u8>,
-    pub id: uuid::Uuid, // for internal use, has no effect in savefiles
     pub slot_index: usize,
     pub slot_start_index: usize,
     pub header_start_index: usize,
@@ -94,7 +93,6 @@ impl Save {
             character_name: parse_character_name(slot_index, game_data),
             save_data: parse_header_data(slot_index, game_data),
             header_data: parse_header_data(slot_index, game_data),
-            id: uuid::Uuid::new_v4(),
             slot_index,
             slot_start_index: get_slot_start_index(slot_index),
             header_start_index: get_header_start_index(slot_index),
