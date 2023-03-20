@@ -50,8 +50,8 @@ pub fn run() {
 
     // get slots
     println!("Enter source save slot, followed by the target save slot, separated by an empty space: (i.e. \"2 5\")");
-    let mut from_slot = 0;
-    let mut to_slot = 0;
+    let from_slot: usize;
+    let to_slot: usize;
     text_io::scan!("{} {}", from_slot, to_slot);
     assert!((1..11).contains(&from_slot) && (1..11).contains(&to_slot));
     
