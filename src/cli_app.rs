@@ -16,7 +16,7 @@ pub fn run() {
     let opts = Args::parse_args_default_or_exit();
     let input_file_content = std::fs::read(&opts.input).unwrap();
     let target_file_content = std::fs::read(&opts.output).unwrap();
-
+   
     let input_saves = file_io::list_saves(&input_file_content);
     let target_saves = file_io::list_saves(&target_file_content);
 
@@ -55,8 +55,10 @@ pub fn run() {
     text_io::scan!("{} {}", from_slot, to_slot);
     assert!((1..11).contains(&from_slot) && (1..11).contains(&to_slot));
     
-    print!("Copying character from mule slot {} to save slot {}...", from_slot, to_slot);
+    print!("Copying character from mule slot {} to save slot {}... ", from_slot, to_slot);
 
+    // benchmark for developer use
+    let start = std::time::Instant::now();
 
     // backup
     let backup_file_name = format!("{}.BAK{}", opts.output, helpers::get_unix_timestamp());
@@ -68,7 +70,8 @@ pub fn run() {
     let genareted_save = file_io::generate_new_save_file_content(&input_file_content, &source_save, &target_file_content, target_save);
     std::fs::write(opts.output, genareted_save).unwrap();
 
+    let write_save_time = std::time::Duration::as_millis(&start.elapsed());
     // confirm
-    println!("Success. Exiting.");
+    println!("Success. Exiting.\nNote for developer: write operation took {}ms.", write_save_time);
 }
 
