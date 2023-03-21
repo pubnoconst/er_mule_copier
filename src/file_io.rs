@@ -5,7 +5,7 @@ use crate::{
 
 pub fn list_saves(game_data: &[u8]) -> Vec<save_model::Save> {
     let mut saves = Vec::with_capacity(10);
-    for slot_index in 1..11 {
+    for slot_index in 0..10 {
         let save = save_model::Save::from_raw_data(slot_index, &game_data);
         saves.push(save);
     }

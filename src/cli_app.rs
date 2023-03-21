@@ -23,13 +23,13 @@ pub fn run() {
     // display table
     let table_vec = {
         let mut table_vec = Vec::with_capacity(10);
-        for i in 1..11 {
+        for i in 0..10 {
             table_vec.push(vec![
-                input_saves[i - 1]
+                input_saves[i]
                     .to_string()
                     .cell()
                     .justify(Justify::Right),
-                target_saves[i - 1]
+                target_saves[i]
                     .to_string()
                     .cell()
                     .justify(Justify::Left),
@@ -53,7 +53,7 @@ pub fn run() {
     let from_slot: usize;
     let to_slot: usize;
     text_io::scan!("{} {}", from_slot, to_slot);
-    assert!((1..11).contains(&from_slot) && (1..11).contains(&to_slot));
+    assert!((0..10).contains(&from_slot) && (0..10).contains(&to_slot));
     
     print!("Copying character from mule slot {} to save slot {}... ", from_slot, to_slot);
 
