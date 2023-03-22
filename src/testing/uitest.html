@@ -2,32 +2,42 @@
 <link rel="stylesheet" href="../style.css">
 
 <body>
-    <div id="MainCard" class="FlexContainer">
-        <p id="Greet">
-            Hello and welome to ER mule copier
-        </p>
-        <div id="IOCard" class="FlexContainer">
-            <div id="SourceCard" class="FlexContainer"> <button>
-                    Browse source
-                </button>
-                <select name="src" id="src" class="SelectBox">
-                    <option value="slot 1">slot 1</option>
-                    <option value="slot 2">slot 3</option>
-                    <option value="slot 3">slot 3</option>
-                </select>
-            </div>
-            <div id="TargetCard" class="FlexContainer"><button>
-                    Browse target
-                </button>
-                <select name="dest" id="dest" class="SelectBox">
-                    <option value="slot 1">slot 1</option>
-                    <option value="slot 2">slot 2</option>
-                    <option value="slot 3">slot 3</option>
-                </select>
-            </div>
+    <div id="content">
+        <div id="Headerbar">
+            <p id="Title">
+                ER Mule Copier
+            </p>
+            <button id="ExitButton">
+                Exit
+            </button>
         </div>
-        <button id="CopyButton">
-            Copy
-        </button>
+        <div id="MainCard" class="FlexContainer">
+            <p id="Guide">
+                Welcome, please select the source save file
+            </p>
+            <div id="IOCard" class="FlexContainer">
+                <div id="SourceCard" class="FlexContainer"> <button>
+                        Browse source
+                    </button>
+                    <select name="src" id="src" class="SelectBox">
+                        <option value="slot 1">slot 1</option>
+                        <option value="slot 2">slot 3</option>
+                        <option value="slot 3">slot 3</option>
+                    </select>
+                </div>
+                <div id="TargetCard" class="FlexContainer"><button>
+                        Browse target
+                    </button>
+                    <select name="dest" id="dest" class="SelectBox">
+                        <option value="slot 1">slot 1</option>
+                        <option value="slot 2">slot 2</option>
+                        <option value="slot 3">slot 3</option>
+                    </select>
+                </div>
+            </div>
+            <button id="CopyButton">
+                Copy
+            </button>
+        </div>
     </div>
 </body>
