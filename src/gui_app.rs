@@ -1,9 +1,17 @@
 #![allow(non_snake_case)]
 use dioxus::prelude::*;
+use dioxus_desktop::*;
 
 pub fn run() {
     hot_reload_init!();
-    dioxus_desktop::launch(App);
+    let cfg = Config::new().with_window(
+        WindowBuilder::new()
+        // .with_decorations(false)
+        .with_window_icon(None)
+        .with_title("")
+        .with_min_inner_size(LogicalSize::new(800, 640))
+    );
+    dioxus_desktop::launch_cfg(App, cfg);
 }
 
 fn App(cx: Scope) -> Element {
