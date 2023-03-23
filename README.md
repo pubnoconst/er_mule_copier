@@ -15,12 +15,21 @@
     </ul>
     <li>Command Line</li>
     <ul>
-        <li> Invoke the app from your shell in a command line termnal with input and output file as below: <li>
+        <li> Invoke the app from your shell in a command line termnal with input and output file as below:</li>
         <li> Input file must be prefixed with `-input`, output must be prefixed with `-output`</li>
         <li> Example on windows: `er_mule_copier.exe -input 'path\to\source\savefile.sl2' -output 'path\to\target\savefile.sl2'`</li>
         <li> On *nix/steamdeck it's: 
         `er_mule_copier -input 'path/to/source/savefile.sl2' -output 'path/to/target/savefile.sl2'`
     </ul>
+</ul>
+
+<h3>How to build</h3>
+
+<ul>
+    <li>Install the rust SDK on your system: <a>https://www.rust-lang.org/tools/install</a></li>
+    <li>Download the project using git or github download</li>
+    <li>On the root of the project, issue `cargo build --release`</li>
+    </li>The binary will be found in `target/release/`
 </ul>
 
 <footer>
