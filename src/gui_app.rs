@@ -1,4 +1,6 @@
 #![allow(non_snake_case)]
+use std::path::PathBuf;
+
 use dioxus::prelude::*;
 use dioxus_desktop::*;
 
@@ -15,6 +17,11 @@ pub fn run() {
 }
 
 fn App(cx: Scope) -> Element {
+    let mut input_filename = use_state(cx, || Option::<PathBuf>::None);
+    let mut output_filename = use_state(cx, || Option::<PathBuf>::None);
+    // let mut input_save_slot = use_state(cx, || Option::<usize>::None);
+    // let mut output_save_slot = use_state(cx, || Option::<usize>::None);
+
     cx.render(rsx! {
         style { include_str!("style.css") },
         div { 
@@ -45,7 +52,11 @@ fn App(cx: Scope) -> Element {
                         id: "SourceCard",
                         class: "FlexContainer",
                         button {
-                            "Browse source"
+                            onclick: move |_| {
+                                let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
+                                input_filename.set(file);
+                            },
+                        "Browse source",
                         },
                         select {
                             option {
@@ -66,6 +77,10 @@ fn App(cx: Scope) -> Element {
                         id: "TargetCard",
                         class: "FlexContainer",
                         button {
+                            onclick: move |_| {
+                                let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
+                                output_filename.set(file);
+                            },
                             "Browse target"
                         },
                         select {
