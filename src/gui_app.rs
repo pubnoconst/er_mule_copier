@@ -23,8 +23,8 @@ fn App(cx: Scope) -> Element {
     let output_filename = use_state(cx, || Option::<PathBuf>::None);
     let input_slots = use_state(cx, || Vec::<save_model::Save>::new());
     let output_slots = use_state(cx, || Vec::<save_model::Save>::new());
-    // let mut input_save_slot = use_state(cx, || Option::<usize>::None);
-    // let mut output_save_slot = use_state(cx, || Option::<usize>::None);
+    let input_save_slot = use_state(cx, || Option::<usize>::None);
+    let output_save_slot = use_state(cx, || Option::<usize>::None);
 
     cx.render(rsx! {
         style { include_str!("style.css") },
@@ -47,7 +47,7 @@ fn App(cx: Scope) -> Element {
                 class: "FlexContainer",
                 p {
                     id: "Guide",
-                    "Welcome, please select the source save file",
+                    "Welcome, please select the source and target save file",
                 },
                 div {
                     id: "IOCard",
@@ -55,6 +55,12 @@ fn App(cx: Scope) -> Element {
                     div {
                         id: "SourceCard",
                         class: "FlexContainer",
+                        p {
+                            class: "CardTitle",
+                            u {
+                                "Source"
+                            }
+                        },
                         button {
                             onclick: move |_| {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
@@ -68,6 +74,10 @@ fn App(cx: Scope) -> Element {
                             }
                         },
                         select {
+                            id: "SourceSelection",
+                            onselect: move |_| {
+
+                            },
                             for save in input_slots.get() {
                                 option {
                                     value: "{save.slot_index}",
@@ -79,6 +89,12 @@ fn App(cx: Scope) -> Element {
                     div {
                         id: "TargetCard",
                         class: "FlexContainer",
+                        p {
+                            class: "CardTitle",
+                            u {
+                                "Target"
+                            }
+                        },
                         button {
                             onclick: move |_| {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
@@ -92,6 +108,7 @@ fn App(cx: Scope) -> Element {
                             }
                         },
                         select {
+                            id: "TargetSelection",
                             for save in output_slots.get() {
                                 option {
                                     value: "{save.slot_index}",
