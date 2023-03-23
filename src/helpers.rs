@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 pub fn replace_bytes(
     data: &mut [u8],
     replace_at: usize,
@@ -23,4 +25,9 @@ pub fn get_unix_timestamp() -> u128 {
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards")
         .as_millis()
+}
+
+pub fn truncate_path(pb: &PathBuf) -> String {
+    let slice = pb.as_path().to_str().unwrap(); //we know absolute paths are long enough
+    format!("...{}", &slice[slice.len() - 15 ..])
 }

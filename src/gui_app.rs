@@ -4,6 +4,8 @@ use std::path::PathBuf;
 use dioxus::prelude::*;
 use dioxus_desktop::*;
 
+use crate::{helpers, save_model, file_io};
+
 pub fn run() {
     hot_reload_init!();
     let cfg = Config::new().with_window(
@@ -17,8 +19,10 @@ pub fn run() {
 }
 
 fn App(cx: Scope) -> Element {
-    let mut input_filename = use_state(cx, || Option::<PathBuf>::None);
-    let mut output_filename = use_state(cx, || Option::<PathBuf>::None);
+    let input_filename = use_state(cx, || Option::<PathBuf>::None);
+    let output_filename = use_state(cx, || Option::<PathBuf>::None);
+    let input_slots = use_state(cx, || Vec::<save_model::Save>::new());
+    let output_slots = use_state(cx, || Vec::<save_model::Save>::new());
     // let mut input_save_slot = use_state(cx, || Option::<usize>::None);
     // let mut output_save_slot = use_state(cx, || Option::<usize>::None);
 
@@ -54,23 +58,22 @@ fn App(cx: Scope) -> Element {
                         button {
                             onclick: move |_| {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
-                                input_filename.set(file);
+                                input_filename.set(file.clone());
+                                input_slots.set(file_io::list_saves(&std::fs::read(file.unwrap()).unwrap()));
                             },
-                        "Browse source",
+                            if let Some(pb) = input_filename.get() {
+                                helpers::truncate_path(pb)
+                            } else {
+                                format!("Browse source")
+                            }
                         },
                         select {
-                            option {
-                                value: "slot 1",
-                                "slot 1"
-                            },
-                            option {
-                                value: "slot 2",
-                                "slot 2"
-                            },
-                            option {
-                                value: "slot 3",
-                                "slot 3"
-                            },
+                            for save in input_slots.get() {
+                                option {
+                                    value: "{save.slot_index}",
+                                    "{save.to_string()}"
+                                }
+                            }
                         },
                     },
                     div {
@@ -79,23 +82,22 @@ fn App(cx: Scope) -> Element {
                         button {
                             onclick: move |_| {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
-                                output_filename.set(file);
+                                output_filename.set(file.clone());
+                                output_slots.set(file_io::list_saves(&std::fs::read(file.unwrap()).unwrap()));
                             },
-                            "Browse target"
+                            if let Some(pb) = output_filename.get() {
+                                helpers::truncate_path(pb)
+                            } else {
+                                format!("Browse target")
+                            }
                         },
                         select {
-                            option {
-                                value: "slot 1",
-                                "slot 1"
-                            },
-                            option {
-                                value: "slot 2",
-                                "slot 2"
-                            },
-                            option {
-                                value: "slot 3",
-                                "slot 3"
-                            },
+                            for save in output_slots.get() {
+                                option {
+                                    value: "{save.slot_index}",
+                                    "{save.to_string()}"
+                                }
+                            }
                         }
                     }
                 }
