@@ -32,8 +32,16 @@
     </li>The binary will be found in `target/release/`
 </ul>
 
+<h3>Installation</h3>
+<ul>
+    <li><b>Linux:</b> Todo</li> 
+    <li><b>Windows:</b> Todo</li> 
+</ul>
+
 <footer>
 <hr>
-<b>* Disclaimer:</b> This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted ramifications for using this software. 
+<b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software. 
+
+<p><b>Acknowledgements: </b> This project would not be possible without <a>https://github.com/BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
 </footer>
 

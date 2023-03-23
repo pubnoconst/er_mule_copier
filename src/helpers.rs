@@ -31,3 +31,4 @@ pub fn truncate_path(pb: &PathBuf) -> String {
     let slice = pb.as_path().to_str().unwrap(); //we know absolute paths are long enough
     format!("...{}", &slice[slice.len() - 15 ..])
 }
+
