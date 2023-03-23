@@ -5,7 +5,7 @@
 </h4>
 
 
-<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/mXxcp1k.png">
+<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/uKPzDbp.png">
 
 <h3>How to use</h3>
 <ul>
@@ -26,7 +26,7 @@
 <h3>How to build</h3>
 
 <ul>
-    <li>Install the rust SDK on your system: <a>https://i.imgur.com/JtsNX7Z.png</a></li>
+    <li>Install the rust SDK on your system: <a>https://www.rust-lang.org/tools/install</a></li>
     <li>Download the project using git or github download</li>
     <li>On the root of the project, issue `cargo build --release`</li>
     </li>The binary will be found in `target/release/`

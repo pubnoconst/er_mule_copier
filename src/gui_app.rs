@@ -13,7 +13,7 @@ pub fn run() {
         // .with_decorations(false)
         .with_window_icon(None)
         .with_title("")
-        .with_min_inner_size(LogicalSize::new(800, 640))
+        .with_min_inner_size(LogicalSize::new(800, 670))
     );
     dioxus_desktop::launch_cfg(App, cfg);
 }
