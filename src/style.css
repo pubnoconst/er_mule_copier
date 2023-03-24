@@ -50,8 +50,10 @@ body {
 
 #Guide {
     align-self: center;
-    font-size: x-large;
+    font-size: larger;
     margin-top: 50px;
+    padding: 5px;
+    
 }
 
 #MainCard {

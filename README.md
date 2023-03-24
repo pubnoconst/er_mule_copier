@@ -11,7 +11,7 @@
 <ul>
 <li> GUI </li>
     <ul>
-        <li> Work in progress </li> 
+        <li> The UI should be self explanatory. I haven't crash-proofed the UI yet and I am not sure if I have the time to. </li> 
     </ul>
     <li>Command Line</li>
     <ul>

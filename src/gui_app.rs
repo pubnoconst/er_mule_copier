@@ -19,11 +19,13 @@ pub fn run() {
 fn App(cx: Scope) -> Element {
     let banner = use_state(cx, || String::from("Welcome, please select the source and target save file"));
     let input_filename = use_state(cx, || Option::<PathBuf>::None);
-    let output_filename = use_state(cx, || Option::<PathBuf>::None);
+    let input_game_data = use_ref(cx, || Vec::<u8>::with_capacity(30 * 1024));
+    let target_game_data = use_ref(cx, || Vec::<u8>::with_capacity(30 * 1024));
+    let target_filename = use_state(cx, || Option::<PathBuf>::None);
     let input_slots = use_state(cx, || Vec::<save_model::Save>::new());
-    let output_slots = use_state(cx, || Vec::<save_model::Save>::new());
+    let target_slots = use_state(cx, || Vec::<save_model::Save>::new());
     let input_save_slot = use_state(cx, || Option::<usize>::None);
-    let output_save_slot = use_state(cx, || Option::<usize>::None);
+    let target_save_slot = use_state(cx, || Option::<usize>::None);
 
 
     cx.render(rsx! {
@@ -47,6 +49,7 @@ fn App(cx: Scope) -> Element {
                 class: "FlexContainer",
                 p {
                     id: "Guide",
+                    class: "FlexContainer",
                     banner.as_str()
                 },
                 div {
@@ -66,7 +69,9 @@ fn App(cx: Scope) -> Element {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
                                 input_filename.set(file.clone());
                                 if let Some(f) =  file {
-                                    input_slots.set(file_io::list_saves(&std::fs::read(f).unwrap()));
+                                    let game_data = std::fs::read(f).unwrap();
+                                    input_slots.set(file_io::list_saves(&game_data));
+                                    input_game_data.set(game_data);                                    
                                     input_save_slot.set(Some(0));
                                 } else {
                                     input_slots.set(Vec::new());
@@ -105,16 +110,18 @@ fn App(cx: Scope) -> Element {
                         button {
                             onclick: move |_| {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
-                                output_filename.set(file.clone());
+                                target_filename.set(file.clone());
                                 if let Some(f) =  file {
-                                    output_slots.set(file_io::list_saves(&std::fs::read(f).unwrap()));
-                                    output_save_slot.set(Some(0));
+                                    let game_data = std::fs::read(f).unwrap();
+                                    target_slots.set(file_io::list_saves(&game_data));
+                                    target_game_data.set(game_data);
+                                    target_save_slot.set(Some(0));
                                 } else {
-                                    output_slots.set(Vec::new());
-                                    output_save_slot.set(None);
+                                    target_slots.set(Vec::new());
+                                    target_save_slot.set(None);
                                 }
                             },
-                            if let Some(pb) = output_filename.get() {
+                            if let Some(pb) = target_filename.get() {
                                 helpers::truncate_path(pb)
                             } else {
                                 format!("Browse target")
@@ -123,9 +130,9 @@ fn App(cx: Scope) -> Element {
                         select {
                             id: "TargetSelection",
                             onchange: move |selection_event| {
-                                output_save_slot.set(selection_event.data.value.parse().ok());
+                                target_save_slot.set(selection_event.data.value.parse().ok());
                             },
-                            for save in output_slots.get() {
+                            for save in target_slots.get() {
                                 option {
                                     value: "{save.slot_index}",
                                     "{save.to_string()}"
@@ -139,8 +146,51 @@ fn App(cx: Scope) -> Element {
                     id: "CopyButton",
                     onclick: move |evt| {
                         println!("Selected source file: {:?}\nSelected Slot: {:?}\n", input_filename, input_save_slot);
-                        println!("Selected target file: {:?}\nSelected Slot: {:?}\n", output_filename, output_save_slot);
+                        println!("Selected target file: {:?}\nSelected Slot: {:?}\n", target_filename, target_save_slot);
+                        
+                        // backup
+                        let backup_file_name = format!(
+                            "{}.BAK{}", 
+                            target_filename
+                                .get()
+                                .as_ref()
+                                .unwrap()
+                                .as_path()
+                                .display(), 
+                            helpers::get_unix_timestamp());
+                        std::fs::write(&backup_file_name, &*target_game_data.read()).expect("Could not write backup");
+                        println!("Backup stored as: {}", backup_file_name);
+
+                        // get generated content
+                        let generated_save_data = file_io::generate_new_save_file_content(
+                            &*input_game_data.read(),
+                            &input_slots[input_save_slot.unwrap()],
+                            &*target_game_data.read(),
+                            &target_slots[target_save_slot.unwrap()]
+                        );
+                        std::fs::write(&*target_filename.get().clone().unwrap(), generated_save_data).expect("Could not write save file");
+
+                        // Indicate
+                        banner.set(format!(
+                            "{} has been overwritten with {}", 
+                            &target_slots[target_save_slot.unwrap()],
+                            &input_slots[input_save_slot.unwrap()]
+                        ));
+
+                        // Reload the files
+                        let f = &*input_filename.get().clone().unwrap();
+                        let game_data = std::fs::read(f).unwrap();
+                        input_slots.set(file_io::list_saves(&game_data));
+                        input_game_data.set(game_data);                                    
+
+                        let f = &*target_filename.get().clone().unwrap();
+                        let game_data = std::fs::read(f).unwrap();
+                        target_slots.set(file_io::list_saves(&game_data));
+                        target_game_data.set(game_data);                                    
+
+
                         evt.stop_propagation();
+                        
                     },
                     "Copy",
                 }
