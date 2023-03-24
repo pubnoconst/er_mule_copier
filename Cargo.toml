@@ -7,8 +7,8 @@ edition = "2021"
 
 [dependencies]
 cli-table = "0.4.7"
-dioxus = {git = "https://github.com/DioxusLabs/dioxus.git", branch="master"}
-dioxus-desktop = {git = "https://github.com/DioxusLabs/dioxus.git", branch="master"}
+dioxus = {git = "https://github.com/DioxusLabs/dioxus.git", rev="972cd25"}
+dioxus-desktop = {git = "https://github.com/DioxusLabs/dioxus.git", rev="972cd25"}
 gumdrop = "0.8.1"
 md5 = "0.7.0"
 text_io = "0.1.12"
