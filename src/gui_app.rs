@@ -76,6 +76,7 @@ fn App(cx: Scope) -> Element {
                                 } else {
                                     input_slots.set(Vec::new());
                                     input_save_slot.set(None);
+                                    input_game_data.set(Vec::with_capacity(30 * 1024));
                                 }
                             },
                             if let Some(pb) = input_filename.get() {
@@ -119,6 +120,7 @@ fn App(cx: Scope) -> Element {
                                 } else {
                                     target_slots.set(Vec::new());
                                     target_save_slot.set(None);
+                                    target_game_data.set(Vec::with_capacity(30 * 1024));
                                 }
                             },
                             if let Some(pb) = target_filename.get() {
@@ -145,52 +147,56 @@ fn App(cx: Scope) -> Element {
                 button {
                     id: "CopyButton",
                     onclick: move |evt| {
-                        println!("Selected source file: {:?}\nSelected Slot: {:?}\n", input_filename, input_save_slot);
-                        println!("Selected target file: {:?}\nSelected Slot: {:?}\n", target_filename, target_save_slot);
-                        
-                        // backup
-                        let backup_file_name = format!(
-                            "{}.BAK{}", 
-                            target_filename
-                                .get()
-                                .as_ref()
-                                .unwrap()
-                                .as_path()
-                                .display(), 
-                            helpers::get_unix_timestamp());
-                        std::fs::write(&backup_file_name, &*target_game_data.read()).expect("Could not write backup");
-                        println!("Backup stored as: {}", backup_file_name);
+                        match (input_filename.get(), target_filename.get(), input_save_slot.get(), target_save_slot.get()) {
+                            (Some(i_f), Some(t_f), Some(i_s), Some(t_s)) 
+                            if 
+                                input_game_data.read().len() > 0 
+                                && input_slots.len() > 0  
+                                && target_slots.len() > 0
+                                && target_game_data.read().len() > 0
+                            => {
+                                // backup
+                                let backup_file_name = format!(
+                                    "{}.BAK{}", 
+                                    t_f
+                                        .as_path()
+                                        .display(), 
+                                    helpers::get_unix_timestamp());
+                                std::fs::write(&backup_file_name, &*target_game_data.read()).expect("Could not write backup");
+                                println!("Backup stored as: {}", backup_file_name);
 
-                        // get generated content
-                        let generated_save_data = file_io::generate_new_save_file_content(
-                            &*input_game_data.read(),
-                            &input_slots[input_save_slot.unwrap()],
-                            &*target_game_data.read(),
-                            &target_slots[target_save_slot.unwrap()]
-                        );
-                        std::fs::write(&*target_filename.get().clone().unwrap(), generated_save_data).expect("Could not write save file");
+                                    // get generated content
+                                    let generated_save_data = file_io::generate_new_save_file_content(
+                                    &*input_game_data.read(),
+                                    &input_slots[*i_s],
+                                    &*target_game_data.read(),
+                                    &target_slots[*t_s]
+                                );
+                                // write
+                                std::fs::write(t_f, generated_save_data).expect("Could not write save file");
+                                // Indicate
+                                banner.set(format!(
+                                                     "{} has been overwritten with {}", 
+                                                     &target_slots[*t_s],
+                                                     &input_slots[*i_s]
+                                           )
+                                );
 
-                        // Indicate
-                        banner.set(format!(
-                            "{} has been overwritten with {}", 
-                            &target_slots[target_save_slot.unwrap()],
-                            &input_slots[input_save_slot.unwrap()]
-                        ));
+                                // Reload the files
+                                let game_data = std::fs::read(i_f).unwrap();
+                                input_slots.set(file_io::list_saves(&game_data));
+                                input_game_data.set(game_data);                                    
 
-                        // Reload the files
-                        let f = &*input_filename.get().clone().unwrap();
-                        let game_data = std::fs::read(f).unwrap();
-                        input_slots.set(file_io::list_saves(&game_data));
-                        input_game_data.set(game_data);                                    
-
-                        let f = &*target_filename.get().clone().unwrap();
-                        let game_data = std::fs::read(f).unwrap();
-                        target_slots.set(file_io::list_saves(&game_data));
-                        target_game_data.set(game_data);                                    
-
-
-                        evt.stop_propagation();
-                        
+                                let game_data = std::fs::read(t_f).unwrap();
+                                target_slots.set(file_io::list_saves(&game_data));
+                                target_game_data.set(game_data);    
+                            },
+                            _ => {
+                                banner
+                                    .set("Sorry, something went wrong, please provide character slots as required".into());
+                            }
+                        }
+                        evt.stop_propagation();                       
                     },
                     "Copy",
                 }

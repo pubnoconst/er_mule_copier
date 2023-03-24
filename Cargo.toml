@@ -2,8 +2,18 @@
 name = "er_mule_copier"
 version = "0.1.0"
 edition = "2021"
+description = "Copy character slots in Elden Ring"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[package.metadata.bundle]
+name = "er_mule_copier"
+identifier = "com.github.pubnoconst.er_mule_copier"
+version = "0.1.0"
+short_description = "Copy character slots in Elden Ring"
+deb_depends = ["rust-1.62-all", "libwebkitgtk-3.0-dev"]
+long_description = """
+This app copies characters into your save file in Elden Ring
+"""
+
 
 [dependencies]
 cli-table = "0.4.7"
