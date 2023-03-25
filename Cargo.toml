@@ -6,16 +6,17 @@ description = "Copy character slots in Elden Ring"
 authors = ["https://github.com/pubnoconst"]
 license = "MIT"
 
-[package.metadata.bundle]
-name = "er_mule_copier"
-identifier = "com.github.pubnoconst.er_mule_copier"
-version = "0.1.0"
-short_description = "Copy character slots in Elden Ring"
-deb_depends = ["rust-1.62-all", "libwebkitgtk-3.0-dev"]
-long_description = """
-This app copies characters into your save file in Elden Ring
-"""
+[package.metadata.appimage]
+auto_link = true
+auto_link_exclude_list = [
+    "libc.so*",
+    "libdl.so*",
+    "libpthread.so*",
+]
 
+[[bin]]
+name = "er_mule_copier"
+path = "src/main.rs"
 
 [dependencies]
 cli-table = "0.4.7"
