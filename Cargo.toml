@@ -3,6 +3,8 @@ name = "er_mule_copier"
 version = "0.1.0"
 edition = "2021"
 description = "Copy character slots in Elden Ring"
+authors = ["https://github.com/pubnoconst"]
+license = "MIT"
 
 [package.metadata.bundle]
 name = "er_mule_copier"
