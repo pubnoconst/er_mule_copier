@@ -10,7 +10,7 @@ pub fn run() {
     let cfg = Config::new().with_window(
         WindowBuilder::new()
         .with_title("")
-        .with_min_inner_size(LogicalSize::new(800, 670))
+        .with_min_inner_size(LogicalSize::new(900, 770))
     );
     dioxus_desktop::launch_cfg(App, cfg);
 }
