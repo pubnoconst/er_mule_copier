@@ -1,3 +1,4 @@
+#![windows_subsystem = "windows"]
 mod save_model;
 mod cli_app;
 mod gui_app;
