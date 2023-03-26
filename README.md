@@ -42,7 +42,14 @@
 <footer>
 <hr>
 <b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software. 
-
+<hr>
 <p><b>Acknowledgements: </b> This project would not be possible without <a>https://github.com/BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
+<hr>
+<p>
+<b>Attribution: </b><a href="https://www.flaticon.com/free-icons/copy" title="copy icons">Copy icons created by Freepik - Flaticon</a>
+</p>
+
+
 </footer>
+
 

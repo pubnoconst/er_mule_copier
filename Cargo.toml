@@ -7,6 +7,7 @@ authors = ["https://github.com/pubnoconst"]
 license = "MIT"
 
 [package.metadata.appimage]
+assets = ["icon.png"]
 auto_link = true
 auto_link_exclude_list = [
     "libc.so*",
