@@ -36,11 +36,8 @@
 <ul>
     <li>Relaese page: <a>https://github.com/pubnoconst/er_mule_copier/releases</a></li>
     <li><b>Linux:</b> Check the release page: </li> 
-    <li><b>Windows:</b> Please install the app outside of `Program Files`, I recommend `Desktop`</li>
+    <li><b>Windows:</b> Please install the app outside of `Program Files`, I recommend `Desktop`. See <a>https://i.imgur.com/tuzkSPC.mp4</a></li>
 </ul>
-
-![Windows demo]("https://i.imgur.com/tuzkSPC.mp4")
-
 
 <footer>
 <hr>
