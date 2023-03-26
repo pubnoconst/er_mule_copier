@@ -34,9 +34,9 @@
 
 <h3>Installation</h3>
 <ul>
-    <li>Relaese page: <a>https://github.com/pubnoconst/er_mule_copier/releases</a></li>
-    <li><b>Linux:</b> Check the release page: </li> 
-    <li><b>Windows:</b> Please install the app outside of `Program Files`, I recommend `Desktop`. See <a>https://i.imgur.com/tuzkSPC.mp4</a></li>
+    <li>Relaese page: <a href="https://github.com/pubnoconst/er_mule_copier/releases">Releases</a></li>
+    <li><b>Linux:</b> Check the release page. </li> 
+    <li><b>Windows:</b> Check the realease page. Please install the app outside of `Program Files`, I recommend `Desktop`. See <a href="https://i.imgur.com/tuzkSPC.mp4">Demo</a>.</li>
 </ul>
 
 <footer>
