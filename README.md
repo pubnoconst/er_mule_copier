@@ -35,7 +35,7 @@
 <h3>Installation</h3>
 <ul>
     <li><b>Linux:</b> Todo</li> 
-    <li><b>Windows:</b> Check the releases page: <a>https://github.com/pubnoconst/er_mule_copier/releases</a> <video><source src="https://i.imgur.com/PcQfh2z.mp4" type="video/webm"></video> </li> 
+    <li><b>Windows:</b> Check the releases page: <a>https://github.com/pubnoconst/er_mule_copier/releases</a> <video><source src="https://i.imgur.com/PcQfh2z.mp4" type="video/mp4"></video> </li> 
 </ul>
 
 <footer>
