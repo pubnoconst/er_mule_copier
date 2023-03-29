@@ -52,9 +52,11 @@ pub fn write_file(data: &[u8], fully_qualified_file_name: &PathBuf) -> Result<()
     // backup file needs to be deleted for possible file corruption error
     let mut backup_file_name = fully_qualified_file_name.clone();
     backup_file_name.set_extension("bak");
-    println!("Removing {:?}", backup_file_name);
-    if let Err(e) = remove_file(backup_file_name) {
-        eprintln!("Back up file was not removed: {}", e);
+    if let Err(e) = remove_file(&backup_file_name) {
+        eprintln!(
+            "{:?} was not removed: {}. Make sure there is no .bak file in the game folder ",
+            backup_file_name, e
+        );
     }
 
     // write

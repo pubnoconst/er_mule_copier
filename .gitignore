@@ -15,8 +15,4 @@ Cargo.lock
 
 *.sl2*
 
-libs/
-*.AppImage
-
-wix/
-
+testsaves/

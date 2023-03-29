@@ -62,10 +62,10 @@ fn main() {
         Ok(new_save) => match file_io::write_backup(&new_save, None) {
             Ok(pb) => {
                 println!("Backup written successfully as {:?}", pb);
-                match file_io::write_file(&new_save, &pb) {
+                match file_io::write_file(&new_save, &args.target.into()) {
                     Ok(_) => println!("File overwritten successfully -- Done!"),
                     Err(e) => {
-                        eprintln!("Error overwriting save fiel: {}", e);
+                        eprintln!("Error overwriting save file: {}", e);
                     }
                 }
             }
