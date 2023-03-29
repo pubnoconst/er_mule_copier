@@ -1,116 +1,122 @@
-use crate::{
-    helpers,
-    save_model::{self, Save, SteamID},
+use std::{
+    error::Error,
+    fs::{self, remove_file},
+    path::PathBuf,
 };
 
-pub fn list_saves(game_data: &[u8]) -> Vec<save_model::Save> {
-    let mut saves = Vec::with_capacity(10);
-    for slot_index in 0..10 {
-        let save = save_model::Save::from_raw_data(slot_index, &game_data);
-        saves.push(save);
-    }
-    saves
+use crate::save_model::{self, Character};
+
+pub fn list_active_characters(data: &[u8]) -> Vec<Character> {
+    (0..11)
+        .filter_map(|index| Character::new_active(data, index))
+        .collect()
 }
 
-/// Finds the indices of subslices equaling to `needle` within `haystack`.
-/// Original implementation does NOT skip `needle.len()` when `needle` is found.
-pub fn locate_slices(haystack: &[u8], needle: &[u8]) -> Vec<usize> {
-    // ugly code ahead
-    assert!(haystack.len() >= needle.len());
-    let mut result = Vec::new();
+pub fn list_characters(data: &[u8]) -> Vec<Option<Character>> {
+    (0..11)
+        .map(|index| Character::new_active(data, index))
+        .collect()
+}
+
+// timestamp as backup identifier
+fn get_unix_timestamp() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+}
+
+// writes backup to destination path
+// if destination is None, writes into the Documents folder
+// returns backup file name
+pub fn write_backup(data: &[u8], destination: Option<&PathBuf>) -> Result<PathBuf, Box<dyn Error>> {
+    let mut pb = match destination {
+        Some(pb) => pb.to_owned(),
+        None => match dirs_next::document_dir() {
+            Some(doc) => {
+                let mut pb: PathBuf = doc;
+                pb.push("er_mule_copier_backups"); // backup folder
+                fs::create_dir_all(&pb)?;
+                pb
+            }
+            None => return Err("Unable to find backup destination file".into()),
+        },
+    };
+    pb.push(format!("ER0000 backup from {}", get_unix_timestamp()).as_str());
+    pb.set_extension("sl2");
+    std::fs::write(&pb, data)?;
+    Ok(pb)
+}
+
+pub fn write_file(data: &[u8], fully_qualified_file_name: &PathBuf) -> Result<(), Box<dyn Error>> {
+    // backup file needs to be deleted for possible file corruption error
+    let mut backup_file_name = fully_qualified_file_name.clone();
+    backup_file_name.set_extension("bak");
+    if let Err(e) = remove_file(&backup_file_name) {
+        eprintln!(
+            "{:?} was not removed: {}. Make sure there is no .bak file in the game folder ",
+            backup_file_name, e
+        );
+    }
+
+    // write
+    std::fs::write(fully_qualified_file_name, data)?;
+    Ok(())
+}
+
+pub fn generate_new_data(
+    source_data: &[u8],
+    source_character: &Character,
+    target_data: &[u8],
+    target_slot_index: usize,
+) -> Result<Vec<u8>, Box<dyn Error>> {
+    let mut result = target_data.to_owned();
+    let source_steam_id = save_model::parse_steam_id(source_data)?;
+    let target_steam_id = save_model::parse_steam_id(target_data)?;
+
+    // Replace steam id in the source Character
+    // with the steam id of the target Character
+    // in the target Character save_data
+    let mut result_character = source_character.clone();
     let mut i = 0;
-    while i + needle.len() <= haystack.len() {
-        if haystack[i..i + needle.len()] == needle[..] {
-            result.push(i);
-            i += needle.len();
-        } else {
-            i += 1;
+    while i + 8 < result_character.save_data.len() {
+        if result_character.save_data[i..i + 8] == source_steam_id {
+            result_character.save_data[i..i + 8].copy_from_slice(&target_steam_id);
         }
+        i += 1;
     }
-    result
-}
 
-pub fn overwrite_steam_id(game_data: &mut [u8], steam_id: &SteamID) {
-    for starting_index in locate_slices(&game_data, &steam_id.data) {
-        for i in starting_index..starting_index + &steam_id.data.len() {
-            game_data[i] = steam_id.data[i - starting_index];
-        }
-    }
-}
+    let target_character_slot_start_index = save_model::get_slot_start_position(target_slot_index);
+    let target_character_header_start_index =
+        save_model::get_header_start_position(target_slot_index);
 
-// TODO refactor
-pub fn overwrite_checksums(
-    source_save: &Save,
-    target_save: &Save,
-    generated_save_content: &mut [u8],
-) {
-    use md5::Context;
-    let mut md5cx = Context::new();
-    md5cx.consume(&source_save.save_data);
-    let slot_checksum = md5cx.clone().compute();
-    helpers::replace_bytes(
-        generated_save_content,
-        target_save.slot_start_index - 0x10,
-        &slot_checksum.0,
-        0x10,
+    // write new character save_data
+    result[target_character_slot_start_index..][..save_model::SLOT_LENGTH]
+        .copy_from_slice(&result_character.save_data);
+
+    // write new character header_data
+    result[target_character_header_start_index..][..save_model::SAVE_HEADER_LENGTH]
+        .copy_from_slice(&result_character.header_data);
+
+    // mark new character active
+    result[save_model::CHAR_ACTIVE_STATUS_START_INDEX + target_slot_index] = 0x01;
+
+    let mut md5 = md5::Context::new();
+
+    md5.consume(&result_character.save_data);
+    let slot_checksum_digest = md5.clone().compute();
+    let slot_checksum = slot_checksum_digest.as_slice();
+    result[target_character_slot_start_index - 0x10..][..0x10].copy_from_slice(slot_checksum);
+
+    md5.consume(
+        &result[save_model::SAVE_HEADERS_SECTION_START_INDEX..]
+            [..save_model::SAVE_HEADERS_SECTION_LENGTH],
     );
+    let header_checksum_digest = md5.compute();
+    let header_checksum = header_checksum_digest.as_slice();
 
-    // TODO fix this ugly slicing
-    md5cx.consume(
-        &generated_save_content[save_model::SAVE_HEADERS_SECTION_START_INDEX
-            ..save_model::SAVE_HEADERS_SECTION_START_INDEX
-                + save_model::SAVE_HEADERS_SECTION_LENGTH],
-    );
+    result[save_model::SAVE_HEADERS_SECTION_START_INDEX - 0x10..][..0x10]
+        .copy_from_slice(header_checksum);
 
-    let header_checksum = md5cx.compute();
-    helpers::replace_bytes(
-        generated_save_content,
-        save_model::SAVE_HEADERS_SECTION_START_INDEX - 0x10,
-        &header_checksum.0,
-        0x10,
-    );
-}
-
-pub fn generate_new_save_file_content(
-    source_save_file_content: &[u8],
-    source_save: &Save,
-    target_save_file_content: &[u8],
-    target_save: &Save,
-) -> Vec<u8> {
-    // soource_save_content -> Mule file content
-    // target_save_content -> Users' existing save file content
-    // generated_save_content -> the content of the generated save file as a vector of bytes
-
-    // create new target in memory
-    let mut generated_save_content = target_save_file_content.to_vec();
-    // overwrite steam id in the memory file
-    let target_steam_id = save_model::SteamID::parse_from_game_data(target_save_file_content);
-    overwrite_steam_id(&mut generated_save_content, &target_steam_id);
-    // copy source save slot into target save slot
-    helpers::replace_bytes(
-        &mut generated_save_content,
-        source_save.slot_start_index,
-        source_save_file_content,
-        save_model::SLOT_LENGTH,
-    );
-
-    // copy header
-    helpers::replace_bytes(
-        &mut generated_save_content,
-        target_save.header_start_index,
-        &source_save.header_data,
-        save_model::SAVE_HEADER_LENGTH,
-    );
-
-    // mark target slot as active
-    generated_save_content[save_model::CHAR_ACTIVE_STATUS_START_INDEX + target_save.slot_index] =
-        0x01;
-
-    // calculate checksums
-    overwrite_checksums(source_save, target_save, &mut generated_save_content);
-
-    // return new generated file
-    generated_save_content
-
-    // profit
+    Ok(result)
 }

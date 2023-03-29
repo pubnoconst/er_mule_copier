@@ -2,28 +2,17 @@
 name = "er_mule_copier"
 version = "0.1.0"
 edition = "2021"
-description = "Copy character slots in Elden Ring"
-authors = ["https://github.com/pubnoconst"]
-license = "MIT"
-
-[package.metadata.appimage]
-assets = ["icon.png"]
-auto_link = true
-auto_link_exclude_list = [
-    "libc.so*",
-    "libdl.so*",
-    "libpthread.so*",
-]
 
 [[bin]]
-name = "er_mule_copier"
-path = "src/main.rs"
+name = "cli"
+
+[[bin]]
+name = "gui"
+
 
 [dependencies]
-cli-table = "0.4.7"
-dioxus = {git = "https://github.com/DioxusLabs/dioxus.git", rev="972cd25"}
-dioxus-desktop = {git = "https://github.com/DioxusLabs/dioxus.git", rev="972cd25"}
-gumdrop = "0.8.1"
+clap = { version = "4.1.13", features = ["derive"] }
+comfy-table = "6.1.4"
+dirs-next = "2.0.0"
 md5 = "0.7.0"
 text_io = "0.1.12"
-rfd = { version = "0.11.2", default-features = false,  features = ["xdg-portal"]}
