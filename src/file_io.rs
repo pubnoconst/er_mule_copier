@@ -1,4 +1,8 @@
-use std::{error::Error, fs, path::PathBuf};
+use std::{
+    error::Error,
+    fs::{self, remove_file},
+    path::PathBuf,
+};
 
 use crate::save_model::{self, Character};
 
@@ -42,6 +46,20 @@ pub fn write_backup(data: &[u8], destination: Option<&PathBuf>) -> Result<PathBu
     pb.set_extension("sl2");
     std::fs::write(&pb, data)?;
     Ok(pb)
+}
+
+pub fn write_file(data: &[u8], fully_qualified_file_name: &PathBuf) -> Result<(), Box<dyn Error>> {
+    // backup file needs to be deleted for possible file corruption error
+    let mut backup_file_name = fully_qualified_file_name.clone();
+    backup_file_name.set_extension("bak");
+    println!("Removing {:?}", backup_file_name);
+    if let Err(e) = remove_file(backup_file_name) {
+        eprintln!("Back up file was not removed: {}", e);
+    }
+
+    // write
+    std::fs::write(fully_qualified_file_name, data)?;
+    Ok(())
 }
 
 pub fn generate_new_data(
