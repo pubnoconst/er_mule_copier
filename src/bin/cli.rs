@@ -58,7 +58,7 @@ fn main() {
     }
     let source_character = source_character.unwrap();
 
-    match file_io::generate_new_data(&source_data, &source_character, &target_data, target_index) {
+    match file_io::generate_new_data(source_data, source_character, &target_data, target_index) {
         Ok(new_save) => match file_io::write_backup(&new_save, None) {
             Ok(pb) => {
                 println!("Backup written successfully as {:?}", pb);

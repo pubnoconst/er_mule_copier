@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::save_model::{self, Character};
+use crate::save_model::{self, Character, SAVE_HEADERS_SECTION_LENGTH};
 
 pub fn list_active_characters(data: &[u8]) -> Vec<Character> {
     (0..11)
@@ -64,59 +64,59 @@ pub fn write_file(data: &[u8], fully_qualified_file_name: &PathBuf) -> Result<()
     Ok(())
 }
 
+fn subslice_positions(needle: &[u8], haystack: &[u8]) -> Vec<usize> {
+    haystack
+        .windows(needle.len())
+        .enumerate()
+        .filter(|(_, slice)| slice[..] == needle[..])
+        .map(|(i, _)| i)
+        .collect()
+}
+
 pub fn generate_new_data(
-    source_data: &[u8],
-    source_character: &Character,
+    source_data: Vec<u8>,
+    mut source_character: Character,
     target_data: &[u8],
     target_slot_index: usize,
 ) -> Result<Vec<u8>, Box<dyn Error>> {
-    let mut result = target_data.to_owned();
-    let source_steam_id = save_model::parse_steam_id(source_data)?;
-    let target_steam_id = save_model::parse_steam_id(target_data)?;
+    let mut new_save = target_data.to_owned();
 
-    // Replace steam id in the source Character
-    // with the steam id of the target Character
-    // in the target Character save_data
-    let mut result_character = source_character.clone();
-    let mut i = 0;
-    while i + 8 < result_character.save_data.len() {
-        if result_character.save_data[i..i + 8] == source_steam_id {
-            result_character.save_data[i..i + 8].copy_from_slice(&target_steam_id);
-        }
-        i += 1;
+    let source_id = save_model::parse_steam_id(&source_data)?;
+    let target_id = save_model::parse_steam_id(&target_data)?;
+
+    for id_location in subslice_positions(&source_id, &source_character.save_data) {
+        source_character.save_data[id_location..id_location + 8].copy_from_slice(&target_id);
     }
 
-    let target_character_slot_start_index = save_model::get_slot_start_position(target_slot_index);
-    let target_character_header_start_index =
-        save_model::get_header_start_position(target_slot_index);
+    // Copy source save slot to target save slot in temp file
+    new_save[save_model::get_slot_start_position(target_slot_index)..][..save_model::SLOT_LENGTH]
+        .copy_from_slice(&source_character.save_data);
 
-    // write new character save_data
-    result[target_character_slot_start_index..][..save_model::SLOT_LENGTH]
-        .copy_from_slice(&result_character.save_data);
+    // Copy save header to temp file
+    new_save[save_model::get_header_start_position(target_slot_index)..]
+        [..save_model::SAVE_HEADER_LENGTH]
+        .copy_from_slice(&source_character.header_data);
 
-    // write new character header_data
-    result[target_character_header_start_index..][..save_model::SAVE_HEADER_LENGTH]
-        .copy_from_slice(&result_character.header_data);
-
-    // mark new character active
-    result[save_model::CHAR_ACTIVE_STATUS_START_INDEX + target_slot_index] = 0x01;
+    // Actiate target slot
+    new_save[save_model::CHAR_ACTIVE_STATUS_START_INDEX + target_slot_index] = 1;
 
     let mut md5 = md5::Context::new();
 
-    md5.consume(&result_character.save_data);
-    let slot_checksum_digest = md5.clone().compute();
+    md5.consume(source_character.save_data);
+    let slot_checksum_digest = md5.compute();
     let slot_checksum = slot_checksum_digest.as_slice();
-    result[target_character_slot_start_index - 0x10..][..0x10].copy_from_slice(slot_checksum);
+    new_save[save_model::get_slot_start_position(target_slot_index) - 0x10..][..0x10]
+        .copy_from_slice(&slot_checksum);
 
+    // reset hasher
+    let mut md5 = md5::Context::new();
     md5.consume(
-        &result[save_model::SAVE_HEADERS_SECTION_START_INDEX..]
-            [..save_model::SAVE_HEADERS_SECTION_LENGTH],
+        &new_save[save_model::SAVE_HEADERS_SECTION_START_INDEX..][..SAVE_HEADERS_SECTION_LENGTH],
     );
     let header_checksum_digest = md5.compute();
     let header_checksum = header_checksum_digest.as_slice();
-
-    result[save_model::SAVE_HEADERS_SECTION_START_INDEX - 0x10..][..0x10]
+    new_save[save_model::SAVE_HEADERS_SECTION_START_INDEX - 0x10..][..0x10]
         .copy_from_slice(header_checksum);
 
-    Ok(result)
+    Ok(new_save)
 }
