@@ -8,8 +8,8 @@ use dioxus_desktop::*;
 use crate::{save_model, file_io};
 
 mod helpers {
-    pub fn truncate_path(pb: &std::path::PathBuf) -> String {
-        let slice = pb.as_path().to_str().unwrap(); //we know absolute paths are long enough
+    pub fn truncate_path(pb: &std::path::Path) -> String {
+        let slice = pb.to_str().unwrap(); //we know absolute paths are long enough
         format!("...{}", &slice[slice.len() - 15 ..])
     }
 }
@@ -34,8 +34,8 @@ fn App(cx: Scope) -> Element {
     let input_game_data = use_ref(cx, || Vec::<u8>::with_capacity(30 * 1024));
     let target_game_data = use_ref(cx, || Vec::<u8>::with_capacity(30 * 1024));
     let target_filename = use_state(cx, || Option::<PathBuf>::None);
-    let input_slots = use_state(cx, || Vec::<save_model::Character>::new());
-    let target_slots = use_state(cx, || Vec::<save_model::Character>::new());
+    let input_slots = use_state(cx,  Vec::<save_model::Character>::new);
+    let target_slots = use_state(cx, Vec::<save_model::Character>::new);
     let input_save_slot = use_state(cx, || Option::<usize>::None);
     let target_save_slot = use_state(cx, || Option::<usize>::None);
 
@@ -94,7 +94,7 @@ fn App(cx: Scope) -> Element {
                             if let Some(pb) = input_filename.get() {
                                 helpers::truncate_path(pb)
                             } else {
-                                format!("Browse source")
+                                "Browse source".to_string()
                             }
                         },
                         select {
@@ -138,7 +138,7 @@ fn App(cx: Scope) -> Element {
                             if let Some(pb) = target_filename.get() {
                                 helpers::truncate_path(pb)
                             } else {
-                                format!("Browse target")
+                                "Browse target".to_string()
                             }
                         },
                         select {
@@ -179,14 +179,15 @@ fn App(cx: Scope) -> Element {
                                 ).expect("Error generating save data");
                                 
                                 // write
-                                std::fs::write(t_f, &generated_save_data).expect("Could not write save file");
-                                // Indicate
-                                banner.set(format!(
-                                                     "{} has been overwritten with {}", 
-                                                     &target_slots[*t_s],
-                                                     &input_slots[*i_s]
-                                           )
-                                );
+                                match file_io::write_file(&generated_save_data, t_f) {
+                                    Err(_) =>  banner.set("Sorry, something went wrong, please provide character slots as required".into()),
+                                    Ok(_) => banner.set(format!(
+                                        "{} has been overwritten with {}", 
+                                        &target_slots[*t_s],
+                                        &input_slots[*i_s]
+                                        )     
+                                    )    
+                                }
 
                                 // Reload the files
                                 let game_data = std::fs::read(i_f).unwrap();

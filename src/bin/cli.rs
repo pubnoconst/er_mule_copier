@@ -19,14 +19,14 @@ fn main() {
     let args = Args::parse();
 
     let source_data = std::fs::read(args.source);
-    if let Err(_) = source_data {
+    if source_data.is_err() {
         eprintln!("Unable to read source file.");
         exit(1);
     }
     let source_data = source_data.unwrap();
 
     let target_data = std::fs::read(&args.target);
-    if let Err(_) = target_data {
+    if target_data.is_err() {
         eprintln!("Unable to read target file.");
         exit(1);
     }
