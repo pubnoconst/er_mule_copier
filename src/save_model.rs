@@ -23,60 +23,26 @@ pub fn get_header_start_position(character_slot_index: usize) -> usize {
     SAVE_HEADER_START_INDEX + character_slot_index * SAVE_HEADER_LENGTH
 }
 
-/// Elden Ring stores name as an array of bytes,
-/// each followed by a null byte
-#[derive(Debug, Clone)]
-pub struct NameString {
-    data: Vec<u8>,
-}
-
-impl std::fmt::Display for NameString {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            String::from_utf8_lossy(
-                self.data
-                    .iter()
-                    .filter(|b| **b != 0)
-                    .copied()
-                    .collect::<Vec<u8>>()
-                    .as_slice()
-            )
-        )
-    }
-}
-
-#[test]
-fn name_string() {
-    let hello_world_w_nulls = vec![
-        72, 0, 101, 0, 108, 0, 108, 0, 111, 0, 32, 0, 87, 0, 111, 0, 114, 0, 108, 0, 100, 0,
-    ];
-    let ns = NameString {
-        data: hello_world_w_nulls,
-    };
-    assert_eq!(ns.to_string(), "Hello World");
-}
-
 #[derive(Debug, Clone)]
 pub struct Character {
     pub index: usize,
     pub active: bool,
-    pub name: NameString,
+    pub name: String,
 }
 
 fn parse_active(data: &[u8], index: usize) -> bool {
     data.iter().skip(CHAR_ACTIVE_STATUS_START_INDEX).nth(index) == Some(&1)
 }
 
-pub fn parse_name(data: &[u8], index: usize) -> NameString {
+pub fn parse_name(data: &[u8], index: usize) -> String {
     let name_bytes = data
         .iter()
         .skip(SAVE_HEADER_START_INDEX + index * SAVE_HEADER_LENGTH)
         .take(CHAR_NAME_LENGTH)
         .copied()
-        .collect();
-    NameString { data: name_bytes }
+        .filter(|b| *b != 0)
+        .collect::<Vec<u8>>();
+    String::from_utf8_lossy(&name_bytes).to_string()
 }
 
 pub fn parse_save_data(data: &[u8], index: usize) -> Vec<u8> {
