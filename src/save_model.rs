@@ -63,17 +63,13 @@ pub struct Character {
     pub index: usize,
     pub active: bool,
     pub name: NameString,
-    pub save_data: Vec<u8>,
-    pub header_data: Vec<u8>,
-    pub slot_start_index: usize,
-    pub header_start_index: usize,
 }
 
 fn parse_active(data: &[u8], index: usize) -> bool {
     data.iter().skip(CHAR_ACTIVE_STATUS_START_INDEX).nth(index) == Some(&1)
 }
 
-fn parse_name(data: &[u8], index: usize) -> NameString {
+pub fn parse_name(data: &[u8], index: usize) -> NameString {
     let name_bytes = data
         .iter()
         .skip(SAVE_HEADER_START_INDEX + index * SAVE_HEADER_LENGTH)
@@ -100,19 +96,19 @@ pub fn parse_header_data(data: &[u8], index: usize) -> Vec<u8> {
 }
 
 impl Character {
+    /// Generate Character from data
+    /// WILL contain inactive characters
+    /// Call in context of target characters
     fn new(data: &[u8], index: usize) -> Self {
         Self {
             index,
             active: parse_active(data, index),
             name: parse_name(data, index),
-            save_data: parse_save_data(data, index),
-            header_data: parse_header_data(data, index),
-            slot_start_index: get_slot_start_position(index),
-            header_start_index: get_header_start_position(index),
         }
     }
 
     /// Generate Character iff the Character is active
+    /// Call in context of source
     pub fn new_active(data: &[u8], index: usize) -> Option<Self> {
         let active = parse_active(data, index);
         active.then(|| Self::new(data, index))
