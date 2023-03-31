@@ -73,6 +73,8 @@ fn subslice_positions(needle: &[u8], haystack: &[u8]) -> Vec<usize> {
         .collect()
 }
 
+// We are taking owenership because the upstream does it
+// Might address this  later if there is a reason for it
 pub fn generate_new_data(
     source_data: Vec<u8>,
     mut source_character: Character,
@@ -82,7 +84,7 @@ pub fn generate_new_data(
     let mut new_save = target_data.to_owned();
 
     let source_id = save_model::parse_steam_id(&source_data)?;
-    let target_id = save_model::parse_steam_id(&target_data)?;
+    let target_id = save_model::parse_steam_id(target_data)?;
 
     for id_location in subslice_positions(&source_id, &source_character.save_data) {
         source_character.save_data[id_location..id_location + 8].copy_from_slice(&target_id);
@@ -106,7 +108,7 @@ pub fn generate_new_data(
     let slot_checksum_digest = md5.compute();
     let slot_checksum = slot_checksum_digest.as_slice();
     new_save[save_model::get_slot_start_position(target_slot_index) - 0x10..][..0x10]
-        .copy_from_slice(&slot_checksum);
+        .copy_from_slice(slot_checksum);
 
     // reset hasher
     let mut md5 = md5::Context::new();
