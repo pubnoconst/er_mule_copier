@@ -9,6 +9,7 @@ pub const SAVE_HEADER_LENGTH: usize = 0x24C;
 pub const CHAR_ACTIVE_STATUS_START_INDEX: usize = 0x1901D04;
 pub const CHAR_NAME_LENGTH: usize = 0x22;
 pub const STEAM_ID_LOCATION: usize = 0x19003B4;
+pub const STEAM_ID_LENGTH: usize = 8;
 
 pub fn parse_steam_id(data: &[u8]) -> Result<[u8; 8], Box<dyn Error>> {
     Ok(data[STEAM_ID_LOCATION..][..8].try_into()?)
@@ -82,7 +83,7 @@ fn parse_name(data: &[u8], index: usize) -> NameString {
     NameString { data: name_bytes }
 }
 
-fn parse_save_data(data: &[u8], index: usize) -> Vec<u8> {
+pub fn parse_save_data(data: &[u8], index: usize) -> Vec<u8> {
     data.iter()
         .skip(SLOT_START_INDEX + index * 0x10 + index * SLOT_LENGTH)
         .take(SLOT_LENGTH)
@@ -90,7 +91,7 @@ fn parse_save_data(data: &[u8], index: usize) -> Vec<u8> {
         .collect()
 }
 
-fn parse_header_data(data: &[u8], index: usize) -> Vec<u8> {
+pub fn parse_header_data(data: &[u8], index: usize) -> Vec<u8> {
     data.iter()
         .skip(SAVE_HEADER_START_INDEX + index * SAVE_HEADER_LENGTH)
         .take(SAVE_HEADER_LENGTH)

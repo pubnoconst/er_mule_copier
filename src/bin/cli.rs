@@ -2,7 +2,7 @@ use std::process::exit;
 
 use clap::Parser;
 use comfy_table::Table;
-use er_mule_copier::{file_io, save_model};
+use er_mule_copier::file_io;
 /// Simple program to copy Elden Ring save file
 #[derive(Parser, Debug)]
 struct Args {
@@ -38,27 +38,20 @@ fn main() {
     }
     println!("{table}");
 
-    let source_index: usize;
-    let target_index: usize;
+    let source_slot: usize;
+    let target_slot: usize;
     println!("Enter source slot followed by the target slot separated by a space (i.e. \"2 5\"):");
-    text_io::scan!("{} {}", source_index, target_index);
-    if !(0..10).contains(&source_index) {
+    text_io::scan!("{} {}", source_slot, target_slot);
+    if !(0..10).contains(&source_slot) {
         eprintln!("Error: Source index out of range.");
         exit(1);
     }
-    if !(0..10).contains(&target_index) {
+    if !(0..10).contains(&target_slot) {
         eprintln!("Error: Target index out of range.");
         exit(1);
     }
 
-    let source_character = save_model::Character::new_active(&source_data, source_index);
-    if source_character.is_none() {
-        eprintln!("Cannot copy from an empty slot");
-        exit(1);
-    }
-    let source_character = source_character.unwrap();
-
-    match file_io::generate_new_data(source_data, source_character, &target_data, target_index) {
+    match file_io::generate_new_data(&source_data, source_slot, &target_data, target_slot) {
         Ok(new_save) => match file_io::write_backup(&new_save, None) {
             Ok(pb) => {
                 println!("Backup written successfully as {:?}", pb);
