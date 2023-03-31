@@ -17,11 +17,22 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let source_data = std::fs::read(args.source).expect("Cannot read source file");
-    let source_characters = file_io::list_characters(&source_data);
+    let source_data = std::fs::read(args.source);
+    if let Err(_) = source_data {
+        eprintln!("Unable to read source file.");
+        exit(1);
+    }
+    let source_data = source_data.unwrap();
 
-    let target_data = std::fs::read(&args.target).expect("Cannot read target file");
+    let target_data = std::fs::read(&args.target);
+    if let Err(_) = target_data {
+        eprintln!("Unable to read target file.");
+        exit(1);
+    }
+    let target_data = target_data.unwrap();
+
     let target_characters = file_io::list_characters(&target_data);
+    let source_characters = file_io::list_characters(&source_data);
 
     let mut table = Table::new();
     table.set_header(vec!["Source", "Target"]);
