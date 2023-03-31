@@ -17,10 +17,10 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let source_data = std::fs::read(args.source).unwrap();
+    let source_data = std::fs::read(args.source).expect("Cannot read source file");
     let source_characters = file_io::list_characters(&source_data);
 
-    let target_data = std::fs::read(&args.target).unwrap();
+    let target_data = std::fs::read(&args.target).expect("Cannot read target file");
     let target_characters = file_io::list_characters(&target_data);
 
     let mut table = Table::new();
