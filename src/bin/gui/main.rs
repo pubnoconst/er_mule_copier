@@ -180,7 +180,7 @@ fn App(cx: Scope) -> Element {
                                 
                                 // write
                                 match file_io::write_file(&generated_save_data, t_f) {
-                                    Err(_) =>  banner.set("Sorry, something went wrong, please provide character slots as required".into()),
+                                    Err(_) =>  banner.set("Sorry, something went wrong, failed to write into your save file".into()),
                                     Ok(_) => banner.set(format!(
                                         "{} has been overwritten with {}", 
                                         &target_slots[*t_s],
