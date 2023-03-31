@@ -7,15 +7,20 @@ use std::{
 use crate::save_model::{self, Character, SAVE_HEADERS_SECTION_LENGTH};
 
 pub fn list_active_characters(data: &[u8]) -> Vec<Character> {
-    (0..11)
+    (0..10)
         .filter_map(|index| Character::new_active(data, index))
         .collect()
 }
 
 pub fn list_characters(data: &[u8]) -> Vec<Option<Character>> {
-    (0..11)
+    (0..10)
         .map(|index| Character::new_active(data, index))
         .collect()
+}
+
+/// Prases all chraracters, active or inactive
+pub fn list_all_characters(data: &[u8]) -> Vec<Character> {
+    (0..10).map(|i| Character::new(data, i)).collect()
 }
 
 // timestamp as backup identifier

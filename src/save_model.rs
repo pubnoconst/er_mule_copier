@@ -65,7 +65,7 @@ impl Character {
     /// Generate Character from data
     /// WILL contain inactive characters
     /// Call in context of target characters
-    fn new(data: &[u8], index: usize) -> Self {
+    pub fn new(data: &[u8], index: usize) -> Self {
         Self {
             index,
             active: parse_active(data, index),
@@ -83,6 +83,6 @@ impl Character {
 
 impl std::fmt::Display for Character {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Slot {}: {}", self.index, self.name)
+        write!(f, "Slot {} {}", self.index, self.name)
     }
 }

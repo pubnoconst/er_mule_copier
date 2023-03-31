@@ -3,6 +3,7 @@ use std::process::exit;
 use clap::Parser;
 use comfy_table::Table;
 use er_mule_copier::file_io;
+
 /// Simple program to copy Elden Ring save file
 #[derive(Parser, Debug)]
 struct Args {
