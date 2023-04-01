@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::save_model::{self, Character, SAVE_HEADERS_SECTION_LENGTH};
+use crate::save_model::{self, Character, SAVE_HEADERS_SECTION_LENGTH, STEAM_ID_LENGTH};
 
 pub fn list_active_characters(data: &[u8]) -> Vec<Character> {
     (0..10)
@@ -98,7 +98,8 @@ pub fn generate_new_data(
         save_model::parse_header_data(source_data, source_character_slot);
 
     for id_location in subslice_positions(&source_id, &source_character_save_data) {
-        source_character_save_data[id_location..id_location + 8].copy_from_slice(&target_id);
+        source_character_save_data[id_location..id_location + STEAM_ID_LENGTH]
+            .copy_from_slice(&target_id);
     }
 
     // Copy source save slot to target save slot in temp file

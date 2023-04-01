@@ -9,6 +9,9 @@ name = "cli"
 [[bin]]
 name = "gui"
 
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+
 
 [dependencies]
 clap = { version = "4.1.13", features = ["derive"] }

@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![windows_subsystem = "windows"]
 use er_mule_copier::*;
 use std::path::PathBuf;
 
@@ -10,7 +11,7 @@ use crate::{save_model, file_io};
 mod helpers {
     pub fn truncate_path(pb: &std::path::Path) -> String {
         let slice = pb.to_str().unwrap(); //we know absolute paths are long enough
-        format!("...{}", &slice[slice.len() - 15 ..])
+        format!("...{}", slice.chars().take(15).collect::<String>())
     }
 }
 
@@ -81,9 +82,10 @@ fn App(cx: Scope) -> Element {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
                                 input_filename.set(file.clone());
                                 if let Some(f) =  file {
-                                    let game_data = std::fs::read(f).unwrap();
-                                    input_slots.set(file_io::list_active_characters(&game_data));
-                                    input_game_data.set(game_data);                                    
+                                    input_game_data.with_mut(|data_vec|{
+                                        *data_vec = std::fs::read(f).expect("Failed loading input file")
+                                    });
+                                    input_slots.set(file_io::list_active_characters(&input_game_data.read()));
                                     input_save_slot.set(Some(0));
                                 } else {
                                     input_slots.set(Vec::new());
@@ -125,9 +127,10 @@ fn App(cx: Scope) -> Element {
                                 let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
                                 target_filename.set(file.clone());
                                 if let Some(f) =  file {
-                                    let game_data = std::fs::read(f).unwrap();
-                                    target_slots.set(file_io::list_all_characters(&game_data));
-                                    target_game_data.set(game_data);
+                                    target_game_data.with_mut(|data_vec|{
+                                        *data_vec = std::fs::read(f).unwrap();
+                                    });
+                                    target_slots.set(file_io::list_all_characters(&target_game_data.read()));
                                     target_save_slot.set(Some(0));
                                 } else {
                                     target_slots.set(Vec::new());
@@ -191,13 +194,12 @@ fn App(cx: Scope) -> Element {
 
                                 // Reload the files
                                 let game_data = std::fs::read(i_f).unwrap();
-                                input_slots.set(file_io::list_active_characters(&game_data));
-                                input_game_data.set(game_data);                                    
+                                input_game_data.with_mut(|data_vec| *data_vec = game_data);
+                                input_slots.set(file_io::list_active_characters(&input_game_data.read()));
 
                                 let game_data = std::fs::read(t_f).unwrap();
-                                target_slots.set(file_io::list_all_characters(&game_data));
-                                target_game_data.set(game_data);    
-                            },
+                                target_game_data.with_mut(|data_vec| *data_vec = game_data);
+                                target_slots.set(file_io::list_all_characters(&target_game_data.read()));                            },
                             _ => {
                                 banner
                                     .set("Sorry, something went wrong, please provide character slots as required".into());
@@ -207,7 +209,6 @@ fn App(cx: Scope) -> Element {
                     },
                     "Copy",
                 }
-
             }
         }    
     })
