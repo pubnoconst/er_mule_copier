@@ -199,7 +199,8 @@ fn App(cx: Scope) -> Element {
 
                                 let game_data = std::fs::read(t_f).unwrap();
                                 target_game_data.with_mut(|data_vec| *data_vec = game_data);
-                                target_slots.set(file_io::list_all_characters(&target_game_data.read()));                            },
+                                target_slots.set(file_io::list_all_characters(&target_game_data.read()));
+                            },
                             _ => {
                                 banner
                                     .set("Sorry, something went wrong, please provide character slots as required".into());
