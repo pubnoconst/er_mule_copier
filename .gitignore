@@ -16,3 +16,4 @@ Cargo.lock
 *.sl2*
 
 testsaves/
+*.Appimage
