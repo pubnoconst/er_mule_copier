@@ -16,10 +16,10 @@
     <li>Command Line</li>
     <ul>
         <li> Invoke the app from your shell in a command line termnal with input and output file as below:</li>
-        <li> Input file must be prefixed with `-input`, output must be prefixed with `-output`</li>
-        <li> Example on windows: `er_mule_copier.exe -input 'path\to\source\savefile.sl2' -output 'path\to\target\savefile.sl2'`</li>
+        <li> Input file must be prefixed with `-s`, output must be prefixed with `-t`</li>
+        <li> Example on windows: `er_mule_copier.exe -s 'path\to\source\savefile.sl2' -t 'path\to\target\savefile.sl2'`.</li>
         <li> On *nix/steamdeck it's: 
-        `er_mule_copier -input 'path/to/source/savefile.sl2' -output 'path/to/target/savefile.sl2'`
+        `er_mule_copier -input 'path/to/source/savefile.sl2' -output 'path/to/target/savefile.sl2'`.
     </ul>
 </ul>
 
@@ -27,21 +27,20 @@
 
 <ul>
     <li>Install the rust SDK on your system: <a>https://www.rust-lang.org/tools/install</a></li>
-    <li>Download the project using git or github download</li>
-    <li>On the root of the project, issue `cargo build --release`</li>
-    </li>The binary will be found in `target/release/`
+    <li>Download the project using git or github download.</li>
+    <li>On the root of the project, issue `cargo build --release --bin gui` or `cargo build --release --bin cli` depending on whether you want the CLI or the GUI frontend.</li>
+    </li>The binary will be found in `target/release/` named `gui` or `cli` depending on what you build.
 </ul>
 
 <h3>Installation</h3>
 <ul>
-    <li><b>Linux:</b> Todo</li> 
-    <li><b>Windows:</b> Todo</li> 
+    See the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a>.
 </ul>
 
 <footer>
 <hr>
 <b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software. 
 
-<p><b>Acknowledgements: </b> This project would not be possible without <a>https://github.com/BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
+<p><b>Acknowledgements: </b> This project would not be possible without <a href="https://github.com/BenGrn/EldenRingSaveCopier"> BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
 </footer>
 

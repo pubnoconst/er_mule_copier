@@ -15,11 +15,7 @@ mod helpers {
     }
 }
 
-pub fn main() {
-    run();
-}
-
-pub fn run() {
+fn main() {
     let cfg = Config::new().with_window(
         WindowBuilder::new()
         .with_title("")
