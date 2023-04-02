@@ -39,8 +39,9 @@
 
 <footer>
 <hr>
-<b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software. 
+<p><b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software.</p>
 
 <p><b>Acknowledgements: </b> This project would not be possible without <a href="https://github.com/BenGrn/EldenRingSaveCopier"> BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
+<p><b>Attribution: </b><a target="_blank" href="https://icons8.com/icon/8IL0nIbrmB7p/one-page-up">One Page Up</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
 </footer>
 
