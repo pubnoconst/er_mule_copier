@@ -18,5 +18,5 @@ Cargo.lock
 testsaves/
 
 # Appimage nonsense
-/libs
+libs/
 *.Appimage
