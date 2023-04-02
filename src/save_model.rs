@@ -12,7 +12,7 @@ pub const STEAM_ID_LOCATION: usize = 0x19003B4;
 pub const STEAM_ID_LENGTH: usize = 8;
 
 pub fn parse_steam_id(data: &[u8]) -> Result<[u8; STEAM_ID_LENGTH], Box<dyn Error>> {
-    Ok(data[STEAM_ID_LOCATION..][..8].try_into()?)
+    Ok(data[STEAM_ID_LOCATION..][..STEAM_ID_LENGTH].try_into()?)
 }
 
 pub fn get_slot_start_position(character_slot_index: usize) -> usize {
