@@ -16,4 +16,7 @@ Cargo.lock
 *.sl2*
 
 testsaves/
+
+# Appimage nonsense
+/libs
 *.Appimage
