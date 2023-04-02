@@ -18,3 +18,8 @@ Cargo.lock
 testsaves/
 
 wix/
+
+# Appimage stuff
+libs/
+*.AppImage
+

@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::save_model::{self, Character, SAVE_HEADERS_SECTION_LENGTH, STEAM_ID_LENGTH};
+use crate::save_model::{self, Character};
 
 pub fn list_active_characters(data: &[u8]) -> Vec<Character> {
     (0..10)
@@ -33,7 +33,7 @@ fn get_unix_timestamp() -> u64 {
 
 // writes backup to destination path
 // if destination is None, writes into the Documents folder
-// returns backup file name
+// returns backup file name. Might support custom path in future
 pub fn write_backup(data: &[u8], destination: Option<&PathBuf>) -> Result<PathBuf, Box<dyn Error>> {
     let mut pb = match destination {
         Some(pb) => pb.to_owned(),
@@ -98,7 +98,7 @@ pub fn generate_new_data(
         save_model::parse_header_data(source_data, source_character_slot);
 
     for id_location in subslice_positions(&source_id, &source_character_save_data) {
-        source_character_save_data[id_location..id_location + STEAM_ID_LENGTH]
+        source_character_save_data[id_location..id_location + save_model::STEAM_ID_LENGTH]
             .copy_from_slice(&target_id);
     }
 
@@ -126,7 +126,8 @@ pub fn generate_new_data(
     // reset hasher
     let mut md5 = md5::Context::new();
     md5.consume(
-        &new_save[save_model::SAVE_HEADERS_SECTION_START_INDEX..][..SAVE_HEADERS_SECTION_LENGTH],
+        &new_save[save_model::SAVE_HEADERS_SECTION_START_INDEX..]
+            [..save_model::SAVE_HEADERS_SECTION_LENGTH],
     );
     let header_checksum_digest = md5.compute();
     let header_checksum = header_checksum_digest.as_slice();
