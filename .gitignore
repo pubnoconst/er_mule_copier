@@ -17,6 +17,9 @@ Cargo.lock
 
 testsaves/
 
-# Appimage nonsense
+wix/
+
+# Appimage stuff
 libs/
 *.AppImage
+
