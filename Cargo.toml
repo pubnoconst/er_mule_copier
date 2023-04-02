@@ -2,6 +2,9 @@
 name = "er_mule_copier"
 version = "0.1.0"
 edition = "2021"
+authors = ["pubnoconst"]
+license = "MIT"
+description = "Copy characters from other save files in Elden Ring"
 
 [[bin]]
 name = "cli"
