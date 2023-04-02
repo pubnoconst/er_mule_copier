@@ -19,4 +19,4 @@ testsaves/
 
 # Appimage nonsense
 libs/
-*.Appimage
+*.AppImage
