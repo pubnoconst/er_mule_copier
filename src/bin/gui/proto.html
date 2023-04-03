@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="style.css">
 
 <body>
-    <div id="content">
+    <div id="Content">
         <div id="Headerbar">
             <p id="Title">
                 ER Mule Copier
@@ -12,35 +12,39 @@
                 Exit
             </button>
         </div>
-        <div id="MainCard" class="FlexContainer">
-            <p id="Guide" class="FlexContainer">
+        <div id="MainCard">
+            <p id="Guide">
                 Welcome, please select the source and target save file.
-            <div id="IOCard" class="FlexContainer">
-                <div id="SourceCard" class="FlexContainer">
+            <div id="IOCard">
+                <div id="SourceCard">
                     <p class="CardTitle">
                         <u>Source</u>
                     </p>
-                    <button>
-                        Browse source
-                    </button>
-                    <select name="src" id="src" class="SelectBox">
-                        <option value="slot 1">slot 1</option>
-                        <option value="slot 2">slot 3</option>
-                        <option value="slot 3">slot 3</option>
-                    </select>
+                    <div class="BrowseSelectCard">
+                        <button class="BrowseButton">
+                            Browse source
+                        </button>
+                        <select name="src">
+                            <option value="slot 1">slot 1</option>
+                            <option value="slot 2">slot 3</option>
+                            <option value="slot 3">slot 3</option>
+                        </select>
+                    </div>
                 </div>
-                <div id="TargetCard" class="FlexContainer">
+                <div id="TargetCard">
                     <p class="CardTitle">
                         <u>Target</u>
                     </p>
-                    <button>
-                        Browse target
-                    </button>
-                    <select name="dest" id="dest" class="SelectBox">
-                        <option value="slot 1">slot 1</option>
-                        <option value="slot 2">slot 2</option>
-                        <option value="slot 3">slot 3</option>
-                    </select>
+                    <div class="BrowseSelectCard">
+                        <button class="BrowseButton">
+                            Browse target
+                        </button>
+                        <select name="dest">
+                            <option value="slot 1">slot 1</option>
+                            <option value="slot 2">slot 2</option>
+                            <option value="slot 3">slot 3</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <button id="CopyButton">

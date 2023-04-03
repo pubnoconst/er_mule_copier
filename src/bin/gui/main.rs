@@ -19,7 +19,7 @@ fn main() {
     let cfg = Config::new().with_window(
         WindowBuilder::new()
         .with_title("")
-        .with_min_inner_size(LogicalSize::new(900, 770))
+        .with_min_inner_size(LogicalSize::new(450, 350))
     );
     dioxus_desktop::launch_cfg(App, cfg);
 }
@@ -55,100 +55,101 @@ fn App(cx: Scope) -> Element {
             }
             div {
                 id: "MainCard",
-                class: "FlexContainer",
                 p {
                     id: "Guide",
-                    class: "FlexContainer",
                     banner.as_str()
                 },
                 div {
                     id: "IOCard",
-                    class: "FlexContainer",
                     div {
                         id: "SourceCard",
-                        class: "FlexContainer",
                         p {
                             class: "CardTitle",
                             u {
                                 "Source"
                             }
                         },
-                        button {
-                            onclick: move |_| {
-                                let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
-                                input_filename.set(file.clone());
-                                if let Some(f) =  file {
-                                    input_game_data.with_mut(|data_vec|{
-                                        *data_vec = std::fs::read(f).expect("Failed loading input file")
-                                    });
-                                    input_slots.set(file_io::list_active_characters(&input_game_data.read()));
-                                    input_save_slot.set(Some(0));
+                        div {
+                            class: "BrowseSelectCard",
+                            button {
+                                class: "BrowseButton",
+                                onclick: move |_| {
+                                    let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
+                                    input_filename.set(file.clone());
+                                    if let Some(f) =  file {
+                                        input_game_data.with_mut(|data_vec|{
+                                            *data_vec = std::fs::read(f).expect("Failed loading input file")
+                                        });
+                                        input_slots.set(file_io::list_active_characters(&input_game_data.read()));
+                                        input_save_slot.set(Some(0));
+                                    } else {
+                                        input_slots.set(Vec::new());
+                                        input_save_slot.set(None);
+                                        input_game_data.set(Vec::with_capacity(30 * 1024));
+                                    }
+                                },
+                                if let Some(pb) = input_filename.get() {
+                                    helpers::truncate_path(pb)
                                 } else {
-                                    input_slots.set(Vec::new());
-                                    input_save_slot.set(None);
-                                    input_game_data.set(Vec::with_capacity(30 * 1024));
+                                    "Browse source".to_string()
                                 }
                             },
-                            if let Some(pb) = input_filename.get() {
-                                helpers::truncate_path(pb)
-                            } else {
-                                "Browse source".to_string()
-                            }
-                        },
-                        select {
-                            id: "SourceSelection",
-                            onchange: move |selection_event| {
-                                input_save_slot.set(selection_event.data.value.parse().ok());
-                            },
-                            
-                            for save in input_slots.get() {
-                                option {
-                                    value: "{save.index}",
-                                    "{save}"
+                            select {
+                                onchange: move |selection_event| {
+                                    input_save_slot.set(selection_event.data.value.parse().ok());
+                                },
+                                
+                                for save in input_slots.get() {
+                                    option {
+                                        value: "{save.index}",
+                                        "{save}"
+                                    }
                                 }
-                            }
-                        },
+                            },
+                        }
                     },
                     div {
                         id: "TargetCard",
-                        class: "FlexContainer",
                         p {
                             class: "CardTitle",
                             u {
                                 "Target"
                             }
                         },
-                        button {
-                            onclick: move |_| {
-                                let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
-                                target_filename.set(file.clone());
-                                if let Some(f) =  file {
-                                    target_game_data.with_mut(|data_vec|{
-                                        *data_vec = std::fs::read(f).unwrap();
-                                    });
-                                    target_slots.set(file_io::list_all_characters(&target_game_data.read()));
-                                    target_save_slot.set(Some(0));
+                        div {
+                            class: "BrowseSelectCard",
+                            button {
+                                class: "BrowseButton",
+                                onclick: move |_| {
+                                    let file = rfd::FileDialog::new().add_filter(".sl2", &["sl2"]).pick_file();
+                                    target_filename.set(file.clone());
+                                    if let Some(f) =  file {
+                                        target_game_data.with_mut(|data_vec|{
+                                            *data_vec = std::fs::read(f).unwrap();
+                                        });
+                                        target_slots.set(file_io::list_all_characters(&target_game_data.read()));
+                                        target_save_slot.set(Some(0));
+                                    } else {
+                                        target_slots.set(Vec::new());
+                                        target_save_slot.set(None);
+                                        target_game_data.set(Vec::with_capacity(30 * 1024));
+                                    }
+                                },
+                                if let Some(pb) = target_filename.get() {
+                                    helpers::truncate_path(pb)
                                 } else {
-                                    target_slots.set(Vec::new());
-                                    target_save_slot.set(None);
-                                    target_game_data.set(Vec::with_capacity(30 * 1024));
+                                    "Browse target".to_string()
                                 }
                             },
-                            if let Some(pb) = target_filename.get() {
-                                helpers::truncate_path(pb)
-                            } else {
-                                "Browse target".to_string()
-                            }
-                        },
-                        select {
-                            id: "TargetSelection",
-                            onchange: move |selection_event| {
-                                target_save_slot.set(selection_event.data.value.parse().ok());
-                            },
-                            for save in target_slots.get() {
-                                option {
-                                    value: "{save.index}",
-                                    "{save}"
+                            select {
+                                onchange: move |selection_event| {
+                                    target_save_slot.set(selection_event.data.value.parse().ok());
+                                },
+                                for save in target_slots.get() {
+                                    option {
+                                        value: "{save.index}",
+                                        "{save}"
+                                    }
                                 }
                             }
                         }
