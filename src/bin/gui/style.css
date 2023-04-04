@@ -9,6 +9,14 @@ body {
     justify-content: center;
 }
 
+button {
+    transition-duration: 250ms;
+}
+
+select {
+    border: 1px solid;
+}
+
 #Content {
     display: flex;
     flex-direction: column;
@@ -20,12 +28,12 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: solid #c3c3c3;
+    border-bottom: 1px solid #c3c3c3;
 }
 
 #ExitButton {
    background: #ffebeb;
-   border: solid #eb9191;
+   border: 1px solid #eb9191;
 }
 
 #ExitButton:hover {
@@ -60,7 +68,7 @@ body {
 .BrowseButton {
     margin-bottom: 8%;
     background: #fafafa;
-    border: solid #807e7e;
+    border: 1px solid #807e7e;
 }
 
 .BrowseButton:hover {
@@ -79,7 +87,7 @@ body {
 
 #CopyButton {
     background: #59bf7d;
-    border: solid #359357;
+    border: 1px solid #359357;
 }
 
 #CopyButton:hover {
@@ -89,12 +97,4 @@ body {
 button, select {
     border-radius: 4px;
     padding: 2%;
-}
-
-button {
-    transition-duration: 250ms;
-}
-
-select {
-    border: 1px solid;
 }
