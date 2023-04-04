@@ -29,7 +29,7 @@ body {
 }
 
 #ExitButton:hover {
-    background: #fff6f6;
+    background: #ffaaaa;
 }
 
 #MainCard {
@@ -59,6 +59,11 @@ body {
 
 .BrowseButton {
     margin-bottom: 8%;
+    background: #fafafa;
+}
+
+.BrowseButton:hover {
+    background: #f0f0f0;
 }
 
 #CopyButton {
@@ -83,4 +88,8 @@ body {
 button, select {
     border-radius: 4px;
     padding: 2%;
+}
+
+button {
+    transition-duration: 250ms;
 }
