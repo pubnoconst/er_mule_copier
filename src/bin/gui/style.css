@@ -25,11 +25,11 @@ body {
 
 #ExitButton {
    background: #ffebeb;
-   border: solid #b0a2a2;
+   border: solid #eb9191;
 }
 
 #ExitButton:hover {
-    background: #fff6f6;
+    background: #fcd1d1;
 }
 
 #MainCard {
@@ -59,6 +59,11 @@ body {
 
 .BrowseButton {
     margin-bottom: 8%;
+    background: #fafafa;
+}
+
+.BrowseButton:hover {
+    background: #f0f0f0;
 }
 
 #CopyButton {
@@ -72,15 +77,19 @@ body {
 }
 
 #CopyButton {
-    background: #36b362;
-    border: solid #1d5230;
+    background: #59bf7d;
+    border: solid #359357;
 }
 
 #CopyButton:hover {
-    background: #67cf8b;
+    background: #7dd89d;
 }
 
 button, select {
     border-radius: 4px;
     padding: 2%;
+}
+
+button {
+    transition-duration: 250ms;
 }
