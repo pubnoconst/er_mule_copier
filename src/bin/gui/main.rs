@@ -10,7 +10,8 @@ use crate::{save_model, file_io};
 
 mod helpers {
     pub fn truncate_path(pb: &std::path::Path) -> String {
-        let slice = pb.to_str().unwrap(); //we know absolute paths are long enough
+        let slice = pb.to_str().unwrap(); 
+        // in practical cases absolute paths are long enough
         format!("...{}", slice.chars().take(15).collect::<String>())
     }
 }

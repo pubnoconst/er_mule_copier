@@ -60,6 +60,7 @@ body {
 .BrowseButton {
     margin-bottom: 8%;
     background: #fafafa;
+    border: solid #807e7e;
 }
 
 .BrowseButton:hover {
@@ -92,4 +93,8 @@ button, select {
 
 button {
     transition-duration: 250ms;
+}
+
+select {
+    border: 1px solid;
 }
