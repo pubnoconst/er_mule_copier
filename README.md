@@ -5,7 +5,7 @@
 </h4>
 
 
-<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/uUfO3hB.png">
+<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/2A7XaUx.png">
 
 <h3>How to use</h3>
 <ul>

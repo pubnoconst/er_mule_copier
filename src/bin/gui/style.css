@@ -43,6 +43,14 @@ body {
     justify-content: space-between;
 }
 
+#SourceCard {
+    width: 45%;
+}
+
+#TargetCard {
+    width: 45%;
+}
+
 .BrowseSelectCard {
     display: flex;
     flex-direction: column;
@@ -72,10 +80,7 @@ body {
     background: #67cf8b;
 }
 
-#ExitButton, #CopyButton {
-    padding: 2%;
-}
-
 button, select {
     border-radius: 4px;
+    padding: 2%;
 }
