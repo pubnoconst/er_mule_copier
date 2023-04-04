@@ -19,7 +19,7 @@ fn main() {
     let cfg = Config::new().with_window(
         WindowBuilder::new()
         .with_title("")
-        .with_min_inner_size(LogicalSize::new(450, 350))
+        .with_min_inner_size(LogicalSize::new(630, 350))
     );
     dioxus_desktop::launch_cfg(App, cfg);
 }

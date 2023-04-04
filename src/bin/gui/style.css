@@ -25,7 +25,7 @@ body {
 
 #ExitButton {
    background: #ffebeb;
-   border: solid #7e7e7e;
+   border: solid #b0a2a2;
 }
 
 #ExitButton:hover {
@@ -65,7 +65,7 @@ body {
 
 #CopyButton {
     background: #36b362;
-    border: solid #898989;
+    border: solid #1d5230;
 }
 
 #CopyButton:hover {
@@ -74,4 +74,8 @@ body {
 
 #ExitButton, #CopyButton {
     padding: 2%;
+}
+
+button, select {
+    border-radius: 4px;
 }
