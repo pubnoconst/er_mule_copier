@@ -19,7 +19,7 @@
         <li> Input file must be prefixed with `-s`, output must be prefixed with `-t`</li>
         <li> Example on windows: `er_mule_copier.exe -s 'path\to\source\savefile.sl2' -t 'path\to\target\savefile.sl2'`.</li>
         <li> On *nix/steamdeck it's: 
-        `er_mule_copier -input 'path/to/source/savefile.sl2' -output 'path/to/target/savefile.sl2'`.
+        `er_mule_copier -s 'path/to/source/savefile.sl2' -t 'path/to/target/savefile.sl2'`.
     </ul>
 </ul>
 
