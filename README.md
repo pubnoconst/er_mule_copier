@@ -1,47 +1,80 @@
-<h1>Elden Ring Mule Copier</h1>
+# Elden Ring Mule Copier (CLI)
 
-<h4>
-    Copy characters from a given save file onto yours*.
-</h4>
+A command-line tool to copy character slots between Elden Ring save files (`.sl2`).
 
+This tool performs deterministic, byte-level manipulation of Elden Ring save files. It copies fixed-size character slot data blobs and their corresponding headers at known offsets. It does not interpret game logic, stats, or inventory.
 
-<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/2A7XaUx.png">
+Back up your saves before use. This tool creates backups automatically, but you remain responsible for your data.
 
-<h3>How to use</h3>
-<ul>
-<li> GUI </li>
-    <ul>
-        <li> The UI should be self explanatory. I haven't crash-proofed the UI yet and I am not sure if I have the time to. </li> 
-    </ul>
-    <li>Command Line</li>
-    <ul>
-        <li> Invoke the app from your shell in a command line termnal with input and output file as below:</li>
-        <li> Input file must be prefixed with `-s`, output must be prefixed with `-t`</li>
-        <li> Example on windows: `er_mule_copier.exe -s 'path\to\source\savefile.sl2' -t 'path\to\target\savefile.sl2'`.</li>
-        <li> On *nix/steamdeck it's: 
-        `er_mule_copier -s 'path/to/source/savefile.sl2' -t 'path/to/target/savefile.sl2'`.
-    </ul>
-</ul>
+---
 
-<h3>How to build</h3>
+## Why this version is written in Go (and why the GUI was dropped)
 
-<ul>
-    <li>Install the rust SDK on your system: <a>https://www.rust-lang.org/tools/install</a></li>
-    <li>Download the project using git or github download.</li>
-    <li>On the root of the project, issue `cargo build --release --bin gui` or `cargo build --release --bin cli` depending on whether you want the CLI or the GUI frontend.</li>
-    </li>The binary will be found in `target/release/` named `gui` or `cli` depending on what you build.
-</ul>
+This project was originally written in Rust and included a GUI.
 
-<h3>Installation</h3>
-<ul>
-    See the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a>.
-</ul>
+It was rewritten in **Go** and reduced to **CLI-only** for a single, concrete reason:
 
-<footer>
-<hr>
-<p><b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software.</p>
+**The lack of a stable ABI in C-based Linux GUI libraries, specifically `webkit-gtk` and `libsoup`.**
 
-<p><b>Acknowledgements: </b> This project would not be possible without <a href="https://github.com/BenGrn/EldenRingSaveCopier"> BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
-<p><b>Attribution: </b><a target="_blank" href="https://icons8.com/icon/8IL0nIbrmB7p/one-page-up">One Page Up</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
-</footer>
+These libraries repeatedly broke binary compatibility across:
+* Linux distributions
+* distro upgrades
+* Flatpak vs system installs
+* minor version changes
 
+Despite correct builds, the resulting binaries would fail at runtime due to:
+* missing symbols
+* incompatible shared library versions
+* forced rebuilds tied to distro state
+
+This made long-term distribution and maintenance impractical.
+
+As a result:
+* The GUI was abandoned
+* Dynamic linking was rejected
+* Static linking became a hard requirement
+
+Go was chosen because it reliably produces **self-contained, statically linked binaries** without depending on:
+* `glibc` ABI stability beyond a minimal baseline
+* system-installed GUI stacks
+* C-based user-space libraries with weak compatibility guarantees
+
+This rewrite is not about language preference.  
+It is about **avoiding ABI fragility in C-based Linux GUI ecosystems**.
+
+---
+
+## How it works (high level)
+
+Elden Ring save files contain:
+
+* Global save metadata
+* A contiguous table of fixed-size **character headers**
+* A separate region of fixed-size **character slot data blobs**
+
+Key properties:
+
+* Headers and slot data are not interleaved
+* Slots are identified purely by index
+* Inactive characters still have data; visibility is controlled by a flag
+* Offsets and sizes are fixed and version-sensitive
+
+The tool:
+
+1. Loads the entire source and target save files into memory
+2. Displays source and target character slots
+3. Prompts for a source slot and a target slot
+4. Copies:
+   * the source slot data blob
+   * the source slot header
+5. Rewrites Steam ID references and checksums
+6. Writes the updated target save back to disk
+
+All operations are deterministic, bounded, and index-based.
+
+---
+
+## Usage
+
+```bash
+er_mule_copier -from path/to/source.sl2 -to path/to/target.sl2
