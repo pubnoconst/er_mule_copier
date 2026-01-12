@@ -4,8 +4,7 @@ A command-line tool to copy character slots between Elden Ring save files (`.sl2
 
 This tool performs deterministic, byte-level manipulation of Elden Ring save files. It copies fixed-size character slot data blobs and their corresponding headers at known offsets. It does not interpret game logic, stats, or inventory.
 
-Back up your saves before use. This tool creates backups automatically, but you remain responsible for your data.
-
+Back up your saves before use. 
 ---
 
 ## Why this version is written in Go (and why the GUI was dropped)
@@ -14,7 +13,7 @@ This project was originally written in Rust and included a GUI.
 
 It was rewritten in **Go** and reduced to **CLI-only** for a single, concrete reason:
 
-**The lack of a stable ABI in C-based Linux GUI libraries, specifically `webkit-gtk` and `libsoup`.**
+**The lack of a stable ABI in C-based Linux GUI libraries, specifically `webkit-gtk` and `libsoup` etc.**
 
 These libraries repeatedly broke binary compatibility across:
 * Linux distributions
@@ -22,7 +21,7 @@ These libraries repeatedly broke binary compatibility across:
 * Flatpak vs system installs
 * minor version changes
 
-Despite correct builds, the resulting binaries would fail at runtime due to:
+Despite correct builds, the resulting binaries would fail at compile time or worse, runtime due to:
 * missing symbols
 * incompatible shared library versions
 * forced rebuilds tied to distro state
