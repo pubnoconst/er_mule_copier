@@ -1,6 +1,5 @@
 use std::{
     error::Error,
-    fs::remove_file,
     path::PathBuf,
 };
 

@@ -10,4 +10,3 @@ description = "Copy characters from other save files in Elden Ring"
 [dependencies]
 comfy-table = "6.1.4"
 md5 = "0.7.0"
-text_io = "0.1.12"
