@@ -1,6 +1,6 @@
 use std::{
     error::Error,
-    fs::{self, remove_file},
+    fs::remove_file,
     path::PathBuf,
 };
 
@@ -23,48 +23,8 @@ pub fn list_all_characters(data: &[u8]) -> Vec<Character> {
     (0..10).map(|i| Character::new(data, i)).collect()
 }
 
-// timestamp as backup identifier
-fn get_unix_timestamp() -> u64 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-}
-
-// writes backup to destination path
-// if destination is None, writes into the Documents folder
-// returns backup file name. Might support custom path in future
-pub fn write_backup(data: &[u8], destination: Option<&PathBuf>) -> Result<PathBuf, Box<dyn Error>> {
-    let mut pb = match destination {
-        Some(pb) => pb.to_owned(),
-        None => match dirs_next::document_dir() {
-            Some(doc) => {
-                let mut pb: PathBuf = doc;
-                pb.push("er_mule_copier_backups"); // backup folder
-                fs::create_dir_all(&pb)?;
-                pb
-            }
-            None => return Err("Unable to find backup destination file".into()),
-        },
-    };
-    pb.push(format!("ER0000 backup from {}", get_unix_timestamp()).as_str());
-    pb.set_extension("sl2");
-    std::fs::write(&pb, data)?;
-    Ok(pb)
-}
 
 pub fn write_file(data: &[u8], fully_qualified_file_name: &PathBuf) -> Result<(), Box<dyn Error>> {
-    // backup file needs to be deleted for possible file corruption error
-    let mut backup_file_name = fully_qualified_file_name.clone();
-    backup_file_name.set_extension("sl2.bak");
-    if let Err(e) = remove_file(&backup_file_name) {
-        eprintln!(
-            "{:?} was not removed: {}. Make sure there is no .bak file in the game folder ",
-            backup_file_name, e
-        );
-    }
-
-    // write
     std::fs::write(fully_qualified_file_name, data)?;
     Ok(())
 }

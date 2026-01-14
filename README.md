@@ -1,47 +1,62 @@
 <h1>Elden Ring Mule Copier</h1>
 
 <h4>
-    Copy characters from a given save file onto yours*.
+Copy characters from one Elden Ring save file into another.
 </h4>
 
+<h3>Overview</h3>
 
-<image style="margin-top: 60px; margin-bottom: 30px" src="https://i.imgur.com/uUfO3hB.png">
+This is a small, interactive command-line tool that lets you copy a character slot from one save file (`.sl2`) into another.
+It is designed to be simple, dependency-light, and portable..
+
+There is no GUI and no automatic backup. You are expected to back up your save files yourself.
 
 <h3>How to use</h3>
+
 <ul>
-<li> GUI </li>
-    <ul>
-        <li> The UI should be self explanatory. I haven't crash-proofed the UI yet and I am not sure if I have the time to. </li> 
-    </ul>
-    <li>Command Line</li>
-    <ul>
-        <li> Invoke the app from your shell in a command line termnal with input and output file as below:</li>
-        <li> Input file must be prefixed with `-s`, output must be prefixed with `-t`</li>
-        <li> Example on windows: `er_mule_copier.exe -s 'path\to\source\savefile.sl2' -t 'path\to\target\savefile.sl2'`.</li>
-        <li> On *nix/steamdeck it's: 
-        `er_mule_copier -input 'path/to/source/savefile.sl2' -output 'path/to/target/savefile.sl2'`.
-    </ul>
+<li>Run the executable from a terminal (PowerShell, CMD, bash, etc.).</li>
+<li>The program will:
+  <ul>
+    <li>Welcome you and display a warning.</li>
+    <li>Ask you to drop the <b>source</b> save file into the terminal and press Enter.</li>
+    <li>Ask you to drop the <b>target</b> save file into the terminal and press Enter.</li>
+    <li>Display the character slots for both saves.</li>
+    <li>Prompt you to choose a source slot and a target slot.</li>
+    <li>Overwrite the target save file.</li>
+  </ul>
+</li>
+<li>You can repeat the process or exit explicitly. Ctrl+C always works.</li>
 </ul>
+
+<p>
+On Windows, dragging a file into the console will paste its path automatically.
+</p>
 
 <h3>How to build</h3>
 
 <ul>
-    <li>Install the rust SDK on your system: <a>https://www.rust-lang.org/tools/install</a></li>
-    <li>Download the project using git or github download.</li>
-    <li>On the root of the project, issue `cargo build --release --bin gui` or `cargo build --release --bin cli` depending on whether you want the CLI or the GUI frontend.</li>
-    </li>The binary will be found in `target/release/` named `gui` or `cli` depending on what you build.
+<li>Install Rust: <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></li>
+<li>Clone or download the repository.</li>
+<li>From the project root, run:</li>
 </ul>
 
+<pre>
+cargo build --release
+</pre>
+
+<p>
+The binary will be located in <code>target/release/</code>.
+</p>
+
 <h3>Installation</h3>
+
 <ul>
-    See the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a>.
+<li>Prebuilt binaries are available on the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a>.</li>
+<li>Linux releases are statically linked and should run on most systems.</li>
 </ul>
 
 <footer>
 <hr>
-<p><b>Disclaimer:</b> *This software comes with no guarantee and liability, back up your save file and use this at your own risk. I hold no liability for any unwanted outcomes of using this software.</p>
+<p><b>Disclaimer:</b> This software comes with no guarantees. It will overwrite save files. Back up your saves before using it. You assume all risk.</p>
 
-<p><b>Acknowledgements: </b> This project would not be possible without <a href="https://github.com/BenGrn/EldenRingSaveCopier"> BenGrn/EldenRingSaveCopier</a> since I used the magic constants from that repo. I wanted this save copier to work on Linux and decided to port the app.
-<p><b>Attribution: </b><a target="_blank" href="https://icons8.com/icon/8IL0nIbrmB7p/one-page-up">One Page Up</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a></p>
-</footer>
-
+<p><b>Acknowledgements:</b> This project is based on the magic constants discovered in <a href="https://github.com/BenGrn/EldenRingSaveCopier">BenGrn/EldenRingSaveCopier</a>. This is a Linux- and CLI-focused reimplementation.</p>

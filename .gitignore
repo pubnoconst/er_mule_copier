@@ -14,12 +14,9 @@ Cargo.lock
 /target
 
 *.sl2*
-
+*.den
 testsaves/
 
-wix/
 
-# Appimage stuff
-libs/
-*.AppImage
-
+*.exe
+*.zip
