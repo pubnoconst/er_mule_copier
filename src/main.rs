@@ -147,7 +147,7 @@ fn ui_loop() {
 
         println!("Copy complete.\n");
 
-        match prompt_str("Run again? (y/n)") {
+        match prompt_str("Run again? (y/N)") {
             Some(ref s) if s.eq_ignore_ascii_case("y") => continue,
             _ => break,
         }
