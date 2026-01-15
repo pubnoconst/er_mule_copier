@@ -1,7 +1,7 @@
-use std::io::{self, Write};
-use std::path::Path;
 use comfy_table::Table;
 use er_mule_copier::file_io;
+use std::io::{self, Write};
+use std::path::Path;
 
 struct Args {
     source: String,
@@ -14,7 +14,8 @@ fn prompt_str(prompt: &str) -> Option<String> {
 
     let mut buf = String::new();
     io::stdin().read_line(&mut buf).ok()?;
-    let s = buf.trim().trim_matches('"').to_string();
+
+    let s = buf.trim().trim_matches(&['"', '\''][..]).trim().to_string();
 
     if s.is_empty() {
         None
