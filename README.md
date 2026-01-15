@@ -6,8 +6,16 @@ Copy characters from one Elden Ring save file into another.
 
 <h3>Overview</h3>
 
-This is a small, interactive command-line tool that lets you copy a character slot from one save file (`.sl2`) into another.
+This is a small, interactive command-line tool that lets you copy a character slot from one save file (`.sl2`/`.den`) into another.
 It is designed to be simple, dependency-light, and portable..
+
+<h3>Installation</h3>
+
+<ul>
+<li>Prebuilt binaries are available on the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a></li>
+<li>On Wndows you should just be able to double click to start the program</li>
+<li>Linux releases are statically linked and should run on most systems but you have to put the file into your $PATH and invoke it from your terminal.</li>
+</ul>
 
 There is no GUI and no automatic backup. You are expected to back up your save files yourself.
 
@@ -41,19 +49,12 @@ On Windows, dragging a file into the console will paste its path automatically.
 </ul>
 
 <pre>
-cargo build --release
+`cargo build --release`
 </pre>
 
 <p>
 The binary will be located in <code>target/release/</code>.
 </p>
-
-<h3>Installation</h3>
-
-<ul>
-<li>Prebuilt binaries are available on the <a href="https://github.com/pubnoconst/er_mule_copier/releases">releases page</a>.</li>
-<li>Linux releases are statically linked and should run on most systems.</li>
-</ul>
 
 <footer>
 <hr>
